@@ -17,7 +17,16 @@ import {
 import { IMAGES, CITIES, PRICE_RANGES } from "@/lib/data";
 
 const TYPES = ["Car", "Bike", "Tractor"];
-const ALL_BRANDS = ["Toyota", "Honda", "Suzuki", "Yamaha", "Kia", "Massey Ferguson", "Millat", "Zetaco"];
+const ALL_BRANDS = [
+  "Toyota",
+  "Honda",
+  "Suzuki",
+  "Yamaha",
+  "Kia",
+  "Massey Ferguson",
+  "Millat",
+  "Zetaco",
+];
 
 export default function HeroSearch() {
   const [, navigate] = useLocation();
@@ -48,7 +57,7 @@ export default function HeroSearch() {
         brand: brand || "any",
         price: price || "any",
         location: location || "any",
-      }).toString()}`,
+      }).toString()}`
     );
   };
 
@@ -61,13 +70,15 @@ export default function HeroSearch() {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/92 via-[oklch(0.25_0.055_255)]/80 to-[oklch(0.3_0.06_255)]/50" />
 
-      <div ref={containerRef} className="container relative py-16 md:py-24">
+      <div
+        ref={containerRef}
+        className="container relative pt-28 pb-16 md:pt-36 md:pb-24"
+      >
         <p className="hero-animate mb-3 text-sm font-bold uppercase tracking-[0.18em] text-[oklch(0.8_0.15_60)]">
           Your trusted dealership
         </p>
         <h1 className="hero-animate max-w-2xl text-4xl font-display font-bold uppercase leading-[1.02] text-white md:text-6xl">
           Cars. Bikes. Tractors. <br className="hidden md:block" />
-          All in one place.
         </h1>
         <p className="hero-animate mt-4 max-w-xl text-base text-white/85 md:text-lg">
           Browse verified stock or sell your own vehicle — we handle the
@@ -77,7 +88,7 @@ export default function HeroSearch() {
         {/* THE search card — type, brand, price range, location */}
         <div className="hero-animate mt-8 max-w-4xl rounded-lg border border-white/20 bg-white p-3 shadow-2xl md:p-4">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
-            <div className="rounded-md border border-input bg-background p-3">
+            <div className="rounded-md border border-input bg-background py-1.5 px-3">
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Type
               </label>
@@ -87,7 +98,7 @@ export default function HeroSearch() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any type</SelectItem>
-                  {TYPES.map((t) => (
+                  {TYPES.map(t => (
                     <SelectItem key={t} value={t}>
                       {t === "Car" ? "Cars" : t + "s"}
                     </SelectItem>
@@ -95,7 +106,7 @@ export default function HeroSearch() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="rounded-md border border-input bg-background p-3">
+            <div className="rounded-md border border-input bg-background py-1.5 px-3">
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Brand
               </label>
@@ -105,7 +116,7 @@ export default function HeroSearch() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any brand</SelectItem>
-                  {ALL_BRANDS.map((b) => (
+                  {ALL_BRANDS.map(b => (
                     <SelectItem key={b} value={b}>
                       {b}
                     </SelectItem>
@@ -113,7 +124,7 @@ export default function HeroSearch() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="rounded-md border border-input bg-background p-3">
+            <div className="rounded-md border border-input bg-background py-1.5 px-3">
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Price range
               </label>
@@ -123,7 +134,7 @@ export default function HeroSearch() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any price</SelectItem>
-                  {PRICE_RANGES.map((p) => (
+                  {PRICE_RANGES.map(p => (
                     <SelectItem key={p} value={p}>
                       {p}
                     </SelectItem>
@@ -131,7 +142,7 @@ export default function HeroSearch() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="rounded-md border border-input bg-background p-3">
+            <div className="rounded-md border border-input bg-background py-1.5 px-3">
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Location
               </label>
@@ -141,7 +152,7 @@ export default function HeroSearch() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any location</SelectItem>
-                  {CITIES.map((c) => (
+                  {CITIES.map(c => (
                     <SelectItem key={c} value={c}>
                       {c}
                     </SelectItem>
@@ -151,7 +162,7 @@ export default function HeroSearch() {
             </div>
             <button
               onClick={go}
-              className="flex items-center justify-center gap-2 rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3.5 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
+              className="flex items-center justify-center gap-2 rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-2.5 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
             >
               <Search className="h-4 w-4" />
               Search

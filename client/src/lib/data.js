@@ -1,7 +1,7 @@
 import heroBg from "../assets/images/hero_background_image.jpeg";
 import altisImg from "../assets/images/Cars/Altis.jpeg";
 import altisFrontImg from "../assets/images/Cars/Altis_front_pic.jpeg";
-import carsGridImg from "../assets/images/giving_image.jpeg";
+import carsGridImg from "../assets/images/Cars/Cars_Main_Grid.jpeg";
 import havalImg from "../assets/images/Cars/Haval_car.jpeg";
 import civicImg from "../assets/images/Cars/Honda_Civic.png";
 import mehranImg from "../assets/images/Cars/Suzuki_Mehran.jpeg";
@@ -20,7 +20,7 @@ import cd70Pic2Img from "../assets/images/Bikes/Honda_CD70_pic2.png";
 
 import masseyImg from "../assets/images/Tractors/Massey_Ferguson_tractor.jpg";
 import tractorsGridImg from "../assets/images/Tractors/Tractors_Main_Grid.jpg";
-
+import givingImage from "../assets/images/giving_image.jpeg";
 export const IMAGES = {
   hero: heroBg,
   logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&h=100&q=80",
@@ -61,6 +61,7 @@ export const IMAGES = {
   cd70Pic2: cd70Pic2Img,
   tractorsGrid: tractorsGridImg,
   massey: masseyImg,
+  givingImage: givingImage,
 };
 
 export const LISTINGS = [

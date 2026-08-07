@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import SearchPage from "./pages/SearchPage";
 import VehicleDetail from "./pages/VehicleDetail";
 import Contact from "./pages/Contact";
+import Booking from "./pages/Booking";
 import Lenis from "lenis";
 
 function Router() {
@@ -31,6 +32,7 @@ function Router() {
       <Route path={"/spare-parts"} component={SpareParts} />
       <Route path={"/sell"} component={SellPage} />
       <Route path={"/contact"} component={Contact} />
+      <Route path={"/booking"} component={Booking} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/vehicle/:id"} component={VehicleDetail} />
       <Route path={"/404"} component={NotFound} />

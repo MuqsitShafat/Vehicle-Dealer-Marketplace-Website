@@ -16,6 +16,7 @@ const NAV = [
   { label: "Bikes", href: "/bikes" },
   { label: "Tractors", href: "/tractors" },
   { label: "Spare Parts", href: "/spare-parts" },
+  { label: "Booking", href: "/booking" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -58,32 +59,37 @@ export default function SiteHeader() {
 
   return (
     <header ref={headerRef} className="sticky top-0 z-50 bg-primary shadow-md">
-      <div className="container flex h-16 items-center justify-between gap-4">
+      <div className="container flex h-20 items-center justify-between gap-4">
         <Link href="/" className="logo-animate flex items-center gap-2.5">
           <img
             src={IMAGES.logo}
             alt="Waseem logo"
-            className="h-9 w-9 rounded-sm object-contain bg-white/95 p-0.5"
+            className="h-11 w-11 rounded-sm object-contain bg-white/95 p-0.5"
           />
-          <span className="text-[24px] font-display font-bold uppercase leading-none tracking-wide text-primary-foreground">
+          <span className="text-[28px] font-display font-bold uppercase leading-none tracking-wide text-primary-foreground">
             Waseem
           </span>
-          <span className="mt-2 hidden text-[10px] font-medium uppercase tracking-[0.18em] text-[oklch(0.72_0.17_55)] sm:block">
+          <span className="mt-2.5 hidden text-[12px] font-bold uppercase tracking-[0.18em] text-[oklch(0.72_0.17_55)] sm:block">
             Motors
           </span>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          {NAV.map((item) => {
+          {NAV.map(item => {
             const active = location === item.href;
+            const isSpecial = ["Cars", "Bikes", "Tractors"].includes(
+              item.label
+            );
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`nav-animate text-sm font-semibold transition-colors ${
+                className={`nav-animate text-[16px] font-bold transition-colors ${
                   active
                     ? "text-[oklch(0.8_0.15_60)]"
-                    : "text-primary-foreground/85 hover:text-primary-foreground"
+                    : isSpecial
+                      ? "text-sky-300 hover:text-sky-100"
+                      : "text-primary-foreground/85 hover:text-primary-foreground"
                 }`}
               >
                 {item.label}
@@ -109,7 +115,7 @@ export default function SiteHeader() {
           <button
             className="lg:hidden"
             aria-label="Toggle menu"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen(v => !v)}
           >
             {open ? (
               <X className="h-6 w-6 text-primary-foreground" />
@@ -122,7 +128,7 @@ export default function SiteHeader() {
 
       {open && (
         <nav className="container border-t border-primary-foreground/15 py-3 lg:hidden">
-          {NAV.map((item) => (
+          {NAV.map(item => (
             <Link
               key={item.label}
               href={item.href}

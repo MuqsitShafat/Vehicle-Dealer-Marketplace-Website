@@ -24,17 +24,14 @@ import SiteHeader from "@/components/SiteHeader";
 import HeroSearch from "@/components/HeroSearch";
 import ListingCard from "@/components/ListingCard";
 import { useReveal } from "@/hooks/useReveal";
-import {
-  LISTINGS,
-  CATEGORIES,
-  SPARE_PARTS,
-  CONTACT,
-  IMAGES,
-} from "@/lib/data";
+import { LISTINGS, CATEGORIES, SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
 
 const FOOTER_LINKS = [
   { title: "Browse", links: ["Cars", "Bikes", "Tractors", "Spare Parts"] },
-  { title: "Sell", links: ["Sell Your Vehicle", "Why list with us", "Dealer panel"] },
+  {
+    title: "Sell",
+    links: ["Sell Your Vehicle", "Why list with us", "Dealer panel"],
+  },
   { title: "Company", links: ["About", "Contact", "Terms", "Privacy"] },
 ];
 
@@ -43,7 +40,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const sendContact = (e) => {
+  const sendContact = e => {
     e.preventDefault();
     if (!email.trim() || !message.trim()) {
       toast.error("Please fill in your email and message.");
@@ -85,7 +82,7 @@ export default function Home() {
               title: "Honest dealing",
               desc: "Clear paperwork, no hidden fees, trusted since 2005",
             },
-          ].map((t) => (
+          ].map(t => (
             <div key={t.title} className="flex items-start gap-3">
               <t.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
@@ -150,11 +147,17 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {LISTINGS.filter((l) => l.status === "Live").slice(0, 6).map((item, i) => (
-              <div key={item.id} className="reveal" style={{ transitionDelay: `${i * 50}ms` }}>
-                <ListingCard item={item} />
-              </div>
-            ))}
+            {LISTINGS.filter(l => l.status === "Live")
+              .slice(0, 6)
+              .map((item, i) => (
+                <div
+                  key={item.id}
+                  className="reveal"
+                  style={{ transitionDelay: `${i * 50}ms` }}
+                >
+                  <ListingCard item={item} />
+                </div>
+              ))}
           </div>
         </div>
       </section>
@@ -179,7 +182,7 @@ export default function Home() {
               matched to the vehicle models it fits, so there's no guesswork.
             </p>
             <div className="mt-6 space-y-3">
-              {SPARE_PARTS.slice(0, 3).map((p) => (
+              {SPARE_PARTS.slice(0, 3).map(p => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3"
@@ -219,15 +222,15 @@ export default function Home() {
             </h2>
             <p className="mt-3 max-w-lg text-sm text-white/80">
               Submit it through our simple form — photos, price and contact
-              details. Our team reviews every submission, and your vehicle
-              goes live the moment it's approved.
+              details. Our team reviews every submission, and your vehicle goes
+              live the moment it's approved.
             </p>
             <div className="mt-6 space-y-3 text-sm">
               {[
                 "Upload photos and set your asking price",
                 "Pending review — approved within 24 hours",
                 "Buyers reach you directly by phone or WhatsApp",
-              ].map((s) => (
+              ].map(s => (
                 <p key={s} className="flex items-start gap-2">
                   <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-[oklch(0.8_0.15_60)]" />
                   {s}
@@ -243,7 +246,7 @@ export default function Home() {
           </div>
           <div className="reveal relative overflow-hidden rounded-lg">
             <img
-              src={IMAGES.city}
+              src={IMAGES.givingImage}
               alt="Dealer forecourt"
               className="h-72 w-full object-cover lg:h-96"
             />
@@ -269,7 +272,9 @@ export default function Home() {
             >
               <Mail className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Email</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  Email
+                </p>
                 <p className="text-sm font-semibold">{CONTACT.email}</p>
               </div>
             </a>
@@ -279,7 +284,9 @@ export default function Home() {
             >
               <Phone className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Phone</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  Phone
+                </p>
                 <p className="text-sm font-semibold">{CONTACT.phone}</p>
               </div>
             </a>
@@ -291,14 +298,18 @@ export default function Home() {
             >
               <MessageCircle className="h-5 w-5 text-[#25D366]" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">WhatsApp</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  WhatsApp
+                </p>
                 <p className="text-sm font-semibold">{CONTACT.whatsapp}</p>
               </div>
             </a>
             <div className="flex items-center gap-3 rounded-md border border-border bg-card p-4">
               <MapPin className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">Showroom</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  Showroom
+                </p>
                 <p className="text-sm font-semibold">{CONTACT.address}</p>
                 <p className="text-xs text-muted-foreground">{CONTACT.hours}</p>
               </div>
@@ -316,7 +327,7 @@ export default function Home() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
@@ -327,7 +338,7 @@ export default function Home() {
               </label>
               <textarea
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={e => setMessage(e.target.value)}
                 rows={5}
                 placeholder="Tell us what you're looking for..."
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
@@ -370,7 +381,7 @@ export default function Home() {
               {/* Social placeholders — demo links */}
               <a
                 href="#"
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault();
                   toast("Facebook page coming soon");
                 }}
@@ -381,7 +392,7 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault();
                   toast("Instagram page coming soon");
                 }}
@@ -401,7 +412,7 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                onClick={(e) => {
+                onClick={e => {
                   e.preventDefault();
                   toast("YouTube channel coming soon");
                 }}
@@ -412,13 +423,13 @@ export default function Home() {
               </a>
             </div>
           </div>
-          {FOOTER_LINKS.map((col) => (
+          {FOOTER_LINKS.map(col => (
             <div key={col.title}>
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[oklch(0.8_0.15_60)]">
                 {col.title}
               </p>
               <ul className="mt-3 space-y-2 text-sm text-white/80">
-                {col.links.map((l) => {
+                {col.links.map(l => {
                   const hrefMap = {
                     Cars: "/cars",
                     Bikes: "/bikes",
