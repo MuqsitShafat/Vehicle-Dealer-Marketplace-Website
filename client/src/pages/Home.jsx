@@ -51,7 +51,7 @@ export default function Home() {
     setMessage("");
   };
 
-  const whatsappUrl = `https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}`;
+  const whatsappUrl = "https://wa.me/923332834567";
 
   return (
     <div className="min-h-screen">
@@ -266,32 +266,43 @@ export default function Home() {
         </h2>
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div className="reveal space-y-4">
-            <a
-              href={`mailto:${CONTACT.email}`}
-              className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
-            >
-              <Mail className="h-5 w-5 text-primary" />
-              <div>
+            {/* Emails */}
+            <div className="rounded-md border border-border bg-card p-4">
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-primary" />
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  Email
+                  Emails
                 </p>
-                <p className="text-sm font-semibold">{CONTACT.email}</p>
               </div>
-            </a>
-            <a
-              href={`tel:${CONTACT.phone}`}
-              className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
-            >
-              <Phone className="h-5 w-5 text-primary" />
-              <div>
+              <div className="mt-2 space-y-1.5 pl-8">
+                {CONTACT.emails.map((e) => (
+                  <a key={e} href={`mailto:${e}`} className="block text-sm font-semibold hover:underline">
+                    {e}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Phones */}
+            <div className="rounded-md border border-border bg-card p-4">
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-primary" />
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  Phone
+                  Phones
                 </p>
-                <p className="text-sm font-semibold">{CONTACT.phone}</p>
               </div>
-            </a>
+              <div className="mt-2 space-y-1.5 pl-8">
+                {CONTACT.phones.map((p) => (
+                  <a key={p.number} href={`tel:${p.number}`} className="block text-sm font-semibold hover:underline">
+                    {p.name}: {p.number}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* WhatsApp */}
             <a
-              href={whatsappUrl}
+              href="https://wa.me/923332834567"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
@@ -299,19 +310,35 @@ export default function Home() {
               <MessageCircle className="h-5 w-5 text-[#25D366]" />
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  WhatsApp
+                  WhatsApp Support
                 </p>
-                <p className="text-sm font-semibold">{CONTACT.whatsapp}</p>
+                <p className="text-sm font-semibold">0333-2834567</p>
               </div>
             </a>
-            <div className="flex items-center gap-3 rounded-md border border-border bg-card p-4">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  Showroom
-                </p>
-                <p className="text-sm font-semibold">{CONTACT.address}</p>
-                <p className="text-xs text-muted-foreground">{CONTACT.hours}</p>
+
+            {/* Showrooms */}
+            <div className="rounded-md border border-border bg-card p-4">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                    Showrooms (Bhakkar)
+                  </p>
+                  <div className="mt-2 space-y-2 text-xs font-semibold">
+                    <div>
+                      <span className="text-primary block text-[10px] uppercase font-bold">Cars</span>
+                      <span>{CONTACT.showrooms.Car}</span>
+                    </div>
+                    <div>
+                      <span className="text-primary block text-[10px] uppercase font-bold">Tractors</span>
+                      <span>{CONTACT.showrooms.Tractor}</span>
+                    </div>
+                    <div>
+                      <span className="text-primary block text-[10px] uppercase font-bold">Bikes</span>
+                      <span>{CONTACT.showrooms.Bike}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

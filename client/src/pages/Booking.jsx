@@ -46,21 +46,36 @@ export default function Booking() {
             <p className="mt-2 text-sm text-muted-foreground">
               You can still book any vehicle in our stock today! Contact our dealership desk directly by phone or WhatsApp to place a hold.
             </p>
-            <div className="mt-5 space-y-2">
-              <a
-                href={`tel:${CONTACT.phone}`}
-                className="flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-              >
-                <Phone className="h-4 w-4" /> {CONTACT.phone}
-              </a>
-              <a
-                href={`https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=Hi%20Waseem%20Motors,%20I%20want%20to%20book%20a%20vehicle.`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-sm font-semibold text-[#25D366] hover:underline"
-              >
-                <MessageCircle className="h-4 w-4" /> Chat on WhatsApp
-              </a>
+            <div className="mt-5 space-y-3.5">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  Call Booking Desk
+                </p>
+                <div className="space-y-1.5">
+                  {CONTACT.phones.map((p) => (
+                    <a
+                      key={p.number}
+                      href={`tel:${p.number}`}
+                      className="flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+                    >
+                      <Phone className="h-3.5 w-3.5" /> {p.name}: {p.number}
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                  WhatsApp Support
+                </p>
+                <a
+                  href="https://wa.me/923332834567?text=Hi%20Waseem%20Motors,%20I%20want%20to%20book%20a%20vehicle."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 text-xs font-semibold text-[#25D366] hover:underline"
+                >
+                  <MessageCircle className="h-3.5 w-3.5" /> Chat: 0333-2834567
+                </a>
+              </div>
             </div>
           </div>
 

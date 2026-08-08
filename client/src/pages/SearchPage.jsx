@@ -22,8 +22,7 @@ export default function SearchPage() {
   const results = useMemo(() => {
     return LISTINGS.filter((l) => {
       if (type !== "any" && l.category !== type) return false;
-      if (brand !== "any" && !l.title.toLowerCase().startsWith(brand.toLowerCase()))
-        return false;
+      if (brand !== "any" && l.brand !== brand) return false;
       if (location !== "any" && l.city !== location) return false;
       if (price !== "any") {
         const matches = (bound) =>
@@ -42,6 +41,12 @@ export default function SearchPage() {
   const set = (key, value) => {
     const next = new URLSearchParams(params);
     next.set(key, value);
+    if (key === "type") {
+      const currentBrand = params.get("brand") ?? "any";
+      if (value !== "any" && currentBrand !== "any" && !BRANDS[value].includes(currentBrand)) {
+        next.set("brand", "any");
+      }
+    }
     setParams(next.toString(), { replace: true });
   };
 
@@ -71,7 +76,7 @@ export default function SearchPage() {
     </div>
   );
 
-  const allBrands = CATEGORIES.flatMap((c) => BRANDS[c.name]);
+  const allBrands = type !== "any" ? BRANDS[type] : CATEGORIES.flatMap((c) => BRANDS[c.name]);
 
   return (
     <div className="min-h-screen">

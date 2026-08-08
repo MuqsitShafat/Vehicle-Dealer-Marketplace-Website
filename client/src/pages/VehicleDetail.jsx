@@ -161,27 +161,41 @@ export default function VehicleDetail() {
                 <Phone className="mr-2 inline h-4 w-4" /> Ask about availability
               </button>
             ) : (
-              <>
+              <div className="space-y-2 mt-4">
                 <a
-                  href={`tel:${CONTACT.phone}`}
-                  className="mt-4 block w-full rounded-md bg-primary py-3 text-center text-sm font-bold text-primary-foreground transition-shadow hover:shadow-lg"
-                >
-                  <Phone className="mr-2 inline h-4 w-4" /> Call dealer
-                </a>
-                <a
-                  href={`https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Waseem, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
+                  href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-2 block w-full rounded-md bg-[#25D366] py-3 text-center text-sm font-bold text-white transition-shadow hover:shadow-lg"
+                  className="block w-full rounded-md bg-[#25D366] py-3 text-center text-sm font-bold text-white transition-shadow hover:shadow-lg"
                 >
-                  <MessageCircle className="mr-2 inline h-4 w-4" /> WhatsApp dealer
+                  <MessageCircle className="mr-2 inline h-4 w-4" /> WhatsApp Dealer
                 </a>
-              </>
+                
+                <div className="rounded-md border border-border bg-secondary/15 p-3">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    Call Showroom Desk
+                  </p>
+                  <div className="space-y-1.5">
+                    {CONTACT.phones.map((p) => (
+                      <a
+                        key={p.number}
+                        href={`tel:${p.number}`}
+                        className="flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+                      >
+                        <Phone className="h-3.5 w-3.5" /> {p.name}: {p.number}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
             <div className="mt-5 space-y-3 border-t border-border pt-5">
-              <div className="flex items-center gap-2.5 text-sm">
-                <BadgeCheck className="h-4.5 w-4.5 shrink-0 text-primary" />
-                <span>Seller verified by Waseem Motors</span>
+              <div className="flex items-start gap-2.5 text-sm">
+                <MapPin className="h-4.5 w-4.5 shrink-0 text-primary mt-0.5" />
+                <div>
+                  <span className="font-semibold block">Showroom Location:</span>
+                  <span className="text-muted-foreground text-xs">{CONTACT.showrooms[car.category]}</span>
+                </div>
               </div>
               <div className="flex items-center gap-2.5 text-sm">
                 <ShieldCheck className="h-4.5 w-4.5 shrink-0 text-primary" />

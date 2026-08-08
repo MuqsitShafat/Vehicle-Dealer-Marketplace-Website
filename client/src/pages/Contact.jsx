@@ -12,6 +12,7 @@ import {
 import SiteHeader from "@/components/SiteHeader";
 import { CONTACT } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
+import contactBg from "../assets/images/ContactImage.jpeg";
 
 export default function Contact() {
   useReveal();
@@ -22,13 +23,13 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) {
       toast.error("Please fill in your name, email, and message.");
       return;
     }
-    
+
     // Simulate submission
     setSubmitted(true);
     toast.success("Thank you! Your message has been received.");
@@ -39,22 +40,30 @@ export default function Contact() {
       <SiteHeader />
 
       {/* Hero section */}
-      <div className="bg-primary py-16 text-primary-foreground relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/92 via-[oklch(0.25_0.055_255)]/80 to-[oklch(0.3_0.06_255)]/50" />
-        <div className="container relative text-center">
-          <p className="kicker mb-3 text-primary-foreground/80 tracking-[0.2em]">Dealership details</p>
+      <div className="relative overflow-hidden min-h-[40vh] md:min-h-[50vh] flex items-center bg-primary py-12 text-primary-foreground">
+        <img
+          src={contactBg}
+          alt="Waseem Motors Showroom"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/95 via-[oklch(0.25_0.055_255)]/85 to-[oklch(0.3_0.06_255)]/60" />
+        <div className="container relative text-center w-full">
+          <p className="kicker mb-3 text-primary-foreground/80 tracking-[0.2em]">
+            Dealership details
+          </p>
           <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
             Contact Waseem Motors
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-sm text-primary-foreground/75 md:text-base">
-            Have questions about our vehicle stock or listing services? Drop us a line, visit our showroom, or chat on WhatsApp. We are here to help.
+            Have questions about our vehicle stock or listing services? Drop us
+            a line, visit our showroom, or chat on WhatsApp. We are here to
+            help.
           </p>
         </div>
       </div>
 
       <div className="container py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-          
           {/* Left Column: Form */}
           <div className="reveal rounded-lg border border-border bg-card p-6 shadow-sm">
             {submitted ? (
@@ -64,7 +73,9 @@ export default function Contact() {
                   Message Sent Successfully!
                 </h2>
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                  Thank you for reaching out, <strong>{name}</strong>. Our team will review your message and get back to you shortly at <strong>{email}</strong>.
+                  Thank you for reaching out, <strong>{name}</strong>. Our team
+                  will review your message and get back to you shortly at{" "}
+                  <strong>{email}</strong>.
                 </p>
                 <button
                   onClick={() => {
@@ -85,7 +96,8 @@ export default function Contact() {
                   Send Us A Message
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Fill out the form below and we will contact you within 24 hours.
+                  Fill out the form below and we will contact you within 24
+                  hours.
                 </p>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -97,7 +109,7 @@ export default function Contact() {
                       type="text"
                       required
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={e => setName(e.target.value)}
                       placeholder="e.g. Ali Ahmed"
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                     />
@@ -110,7 +122,7 @@ export default function Contact() {
                       type="email"
                       required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={e => setEmail(e.target.value)}
                       placeholder="e.g. ali@domain.com"
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                     />
@@ -122,7 +134,7 @@ export default function Contact() {
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={e => setPhone(e.target.value)}
                       placeholder="e.g. 03001234567"
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                     />
@@ -133,7 +145,7 @@ export default function Contact() {
                     </label>
                     <select
                       value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
+                      onChange={e => setSubject(e.target.value)}
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                     >
                       <option value="Inquiry">General Inquiry</option>
@@ -153,7 +165,7 @@ export default function Contact() {
                     required
                     rows={5}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={e => setMessage(e.target.value)}
                     placeholder="Write details of your query..."
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40 resize-none"
                   />
@@ -177,41 +189,69 @@ export default function Contact() {
                 Quick Contacts
               </h2>
               <div className="mt-5 space-y-4">
-                <a
-                  href={`tel:${CONTACT.phone}`}
-                  className="flex items-center gap-3.5 rounded-md border border-border bg-secondary/10 p-3.5 hover:border-primary/50 transition-colors group"
-                >
-                  <div className="rounded-full bg-primary/10 p-2 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <Phone className="h-5 w-5" />
+                {/* Phone Numbers */}
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2">
+                    Call Showrooms
+                  </p>
+                  <div className="space-y-2">
+                    {CONTACT.phones.map((p) => (
+                      <a
+                        key={p.number}
+                        href={`tel:${p.number}`}
+                        className="flex items-center gap-3 rounded-md border border-border bg-secondary/10 p-2.5 hover:border-primary/50 transition-colors group text-left"
+                      >
+                        <div className="rounded-full bg-primary/10 p-1.5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <Phone className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-card-foreground">{p.name}</p>
+                          <p className="text-[11px] text-muted-foreground">{p.number}</p>
+                        </div>
+                      </a>
+                    ))}
                   </div>
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Call Showroom</p>
-                    <p className="text-sm font-semibold">{CONTACT.phone}</p>
-                  </div>
-                </a>
+                </div>
 
-                <a
-                  href={`https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-3.5 rounded-md border border-border bg-[#25D366]/5 p-3.5 hover:border-[#25D366]/50 transition-colors group"
-                >
-                  <div className="rounded-full bg-[#25D366]/10 p-2 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-colors">
-                    <MessageCircle className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">WhatsApp Chat</p>
-                    <p className="text-sm font-semibold">{CONTACT.whatsapp}</p>
-                  </div>
-                </a>
+                {/* WhatsApp */}
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2">
+                    WhatsApp Chat
+                  </p>
+                  <a
+                    href="https://wa.me/923332834567"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-md border border-border bg-[#25D366]/5 p-2.5 hover:border-[#25D366]/50 transition-colors group text-left"
+                  >
+                    <div className="rounded-full bg-[#25D366]/10 p-1.5 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-colors">
+                      <MessageCircle className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-card-foreground">Muhammad Waseem Awan</p>
+                      <p className="text-[11px] text-muted-foreground">0333-2834567</p>
+                    </div>
+                  </a>
+                </div>
 
-                <div className="flex items-center gap-3.5 rounded-md border border-border bg-secondary/10 p-3.5">
-                  <div className="rounded-full bg-primary/10 p-2 text-primary">
-                    <Mail className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Email Address</p>
-                    <p className="text-sm font-semibold">info@waseemmotors.com</p>
+                {/* Emails */}
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2">
+                    Email Addresses
+                  </p>
+                  <div className="space-y-2">
+                    {CONTACT.emails.map((email) => (
+                      <a
+                        key={email}
+                        href={`mailto:${email}`}
+                        className="flex items-center gap-3 rounded-md border border-border bg-secondary/10 p-2.5 hover:border-primary/50 transition-colors group text-left"
+                      >
+                        <div className="rounded-full bg-primary/10 p-1.5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <Mail className="h-4 w-4" />
+                        </div>
+                        <p className="text-xs font-semibold text-card-foreground break-all">{email}</p>
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -220,24 +260,48 @@ export default function Contact() {
             {/* Hours and showroom card */}
             <div className="reveal rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-xl font-display font-bold uppercase tracking-tight">
-                Showroom Location
+                Showrooms & Hours
               </h2>
-              <div className="mt-5 space-y-4">
-                <div className="flex items-start gap-3.5">
-                  <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Address</p>
-                    <p className="text-sm font-semibold mt-0.5">
-                      Main Showroom, Near Bilal Masjid, Bypass Road, Sargodha, Pakistan
-                    </p>
+              <div className="mt-5 space-y-5">
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                    Showroom Locations
+                  </p>
+                  
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-card-foreground">Cars Showroom</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Car}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-card-foreground">Tractors Showroom</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Tractor}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-bold text-card-foreground">Bikes Showroom</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Bike}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3.5">
-                  <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <hr className="border-border" />
+
+                <div className="flex items-start gap-3">
+                  <Clock className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Opening Hours</p>
-                    <div className="text-xs font-semibold mt-0.5 space-y-1">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                      Opening Hours
+                    </p>
+                    <div className="text-xs font-semibold mt-1 space-y-1">
                       <p>Monday — Saturday: 9:00 AM — 8:00 PM</p>
                       <p className="text-muted-foreground font-normal">Sunday: Closed</p>
                     </div>
@@ -245,9 +309,7 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
     </div>

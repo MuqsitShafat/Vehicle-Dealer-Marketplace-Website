@@ -10,7 +10,7 @@ import { useReveal } from "@/hooks/useReveal";
 export default function SpareParts() {
   useReveal();
   const wa = (name, price) =>
-    `https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi Waseem, I'm interested in: ${name} (${price})`)}`;
+    `https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem, I'm interested in: ${name} (${price})`)}`;
 
   return (
     <div className="min-h-screen">

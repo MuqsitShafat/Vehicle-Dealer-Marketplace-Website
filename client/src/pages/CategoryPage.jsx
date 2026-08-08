@@ -3,7 +3,7 @@
  * Clean card grid with image, title, price, "View Details" button.
  * Brand filter dropdown keeps it simple and clear.
  */
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
@@ -14,12 +14,17 @@ export default function CategoryPage({ category }) {
   useReveal();
   const [brand, setBrand] = useState("any");
 
+  // Reset selected brand when switching categories (e.g. from Bike to Car)
+  useEffect(() => {
+    setBrand("any");
+  }, [category]);
+
   const items = useMemo(
     () =>
       LISTINGS.filter(
         (l) =>
           l.category === category &&
-          (brand === "any" || l.title.toLowerCase().startsWith(brand.toLowerCase())),
+          (brand === "any" || l.brand === brand),
       ),
     [category, brand],
   );
