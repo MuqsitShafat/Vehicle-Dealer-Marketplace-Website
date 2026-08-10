@@ -13,8 +13,31 @@ export default function InfiniteCarousel({ images, interval = 3500, className = 
     );
   }
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Prepend last image and append first image for seamless infinite looping
+  const slides = [images[images.length - 1], ...images, images[0]];
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const timerRef = useRef(null);
+
+  // Handle seamless snap-back at edges
+  useEffect(() => {
+    if (currentIndex === images.length + 1) {
+      // Snapping to the first actual slide
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(1);
+      }, 500); // match transition duration
+      return () => clearTimeout(timer);
+    }
+    if (currentIndex === 0) {
+      // Snapping to the last actual slide
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(images.length);
+      }, 500); // match transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, images.length]);
 
   // Restart timer helper
   const resetTimer = () => {
@@ -22,7 +45,8 @@ export default function InfiniteCarousel({ images, interval = 3500, className = 
       clearInterval(timerRef.current);
     }
     timerRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      setIsTransitioning(true);
+      setCurrentIndex((prev) => prev + 1);
     }, interval);
   };
 
@@ -39,31 +63,42 @@ export default function InfiniteCarousel({ images, interval = 3500, className = 
   const handlePrev = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const handleDotClick = (e, idx) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentIndex(idx);
+    setIsTransitioning(true);
+    setCurrentIndex(idx + 1);
   };
+
+  // Map active slide index to actual images indices
+  const activeIdx = currentIndex === images.length + 1
+    ? 0
+    : currentIndex === 0
+      ? images.length - 1
+      : currentIndex - 1;
 
   return (
     <div className="relative w-full h-full overflow-hidden group/carousel">
       {/* Slides wrapper */}
       <div
-        className="flex h-full w-full transition-transform duration-500 ease-out"
+        className="flex h-full w-full"
         style={{
           transform: `translateX(-${currentIndex * 100}%)`,
+          transition: isTransitioning ? "transform 500ms cubic-bezier(0.25, 1, 0.5, 1)" : "none",
         }}
       >
-        {images.map((src, idx) => (
+        {slides.map((src, idx) => (
           <div key={idx} className="h-full w-full shrink-0">
             <img
               src={src}
@@ -102,7 +137,7 @@ export default function InfiniteCarousel({ images, interval = 3500, className = 
             type="button"
             onClick={(e) => handleDotClick(e, idx)}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              currentIndex === idx ? "bg-white w-3" : "bg-white/50 hover:bg-white"
+              activeIdx === idx ? "bg-white w-3" : "bg-white/50 hover:bg-white"
             }`}
             aria-label={`Go to slide ${idx + 1}`}
           />
