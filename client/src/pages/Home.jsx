@@ -24,13 +24,66 @@ import SiteHeader from "@/components/SiteHeader";
 import HeroSearch from "@/components/HeroSearch";
 import ListingCard from "@/components/ListingCard";
 import { useReveal } from "@/hooks/useReveal";
+import {
+  WhatsAppIcon,
+  YouTubeIcon,
+  TikTokIcon,
+  InstagramIcon,
+  FacebookIcon,
+} from "@/components/SocialIcons";
 import { LISTINGS, CATEGORIES, SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
+import rev1 from "@/assets/images/Reviews/1.jpeg";
+import rev2 from "@/assets/images/Reviews/2.jpeg";
+import rev3 from "@/assets/images/Reviews/3.jpeg";
+import rev4 from "@/assets/images/Reviews/4.jpeg";
+import rev5 from "@/assets/images/Reviews/5.jpeg";
+import rev6 from "@/assets/images/Reviews/6.jpeg";
+
+const REVIEWS = [rev1, rev2, rev3, rev4, rev5, rev6];
+
+const REVIEW_DATA = [
+  {
+    name: "Sheikh Muhammad Ali",
+    text: "Extremely satisfied with my buying experience. The team was highly professional and the vehicle was clean as promised!",
+    rating: 5
+  },
+  {
+    name: "Chaudhary Nabeel",
+    text: "Honest dealings, clear paperwork, and outstanding post-purchase support. Waseem Motors is highly trusted.",
+    rating: 5
+  },
+  {
+    name: "Sheikh Yasir Awan",
+    text: "Got a Massey Ferguson tractor in pristine condition at a very fair price. Excellent client service!",
+    rating: 5
+  },
+  {
+    name: "Chaudhary Abdul Rehman",
+    text: "Superb customer service! The staff is very cooperative and guided me throughout the registration process.",
+    rating: 5
+  },
+  {
+    name: "Sheikh Hammad",
+    text: "Bought my Honda CG 125 from Waseem Honda. The service was top notch and transaction was seamless.",
+    rating: 5
+  },
+  {
+    name: "Chaudhary Kamran",
+    text: "Transparency and trust define Waseem Motors. Fully satisfied with their fair deals. Will buy again!",
+    rating: 5
+  }
+];
+
+const CUSTOMER_REVIEWS = REVIEWS.map((img, i) => ({
+  img,
+  ...REVIEW_DATA[i % REVIEW_DATA.length]
+}));
 
 const FOOTER_LINKS = [
   { title: "Browse", links: ["Cars", "Bikes", "Tractors", "Spare Parts"] },
   {
     title: "Sell",
-    links: ["Sell Your Vehicle", "Why list with us", "Dealer panel"],
+    links: ["Sell Your Vehicle", "Why list with us"],
   },
   { title: "Company", links: ["About", "Contact", "Terms", "Privacy"] },
 ];
@@ -258,6 +311,107 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Reviews Marquee Section */}
+      <section className="bg-secondary/40 py-16 overflow-hidden">
+        <div className="container relative mb-10 text-center">
+          <h2 className="text-3xl font-display font-bold uppercase tracking-tight md:text-4xl text-primary">
+            Reviews
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-sm font-bold tracking-[0.05em] text-muted-foreground uppercase">
+            Waseem Motors & Waseem Honda
+          </p>
+        </div>
+
+        <div className="relative flex overflow-x-hidden py-4 border-y border-border bg-card">
+          <div className="animate-marquee flex whitespace-nowrap">
+            {/* First loop of images */}
+            {CUSTOMER_REVIEWS.map((item, index) => (
+              <div
+                key={`rev-first-${index}`}
+                className="group relative mx-4 w-[280px] h-[350px] shrink-0 rounded-xl overflow-hidden border border-border/80 shadow-sm transition-all hover:shadow-lg bg-secondary/15"
+              >
+                <img
+                  src={item.img}
+                  alt={`Customer Review ${index + 1}`}
+                  className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-primary/95 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-6 text-center">
+                  <div className="flex gap-1 text-[oklch(0.72_0.17_55)] mb-3 text-lg">
+                    {"★".repeat(item.rating)}
+                  </div>
+                  <h4 className="font-display text-xl font-bold uppercase tracking-wide mb-2 text-white">
+                    {item.name}
+                  </h4>
+                  <p className="text-xs text-white/80 leading-relaxed italic whitespace-normal">
+                    "{item.text}"
+                  </p>
+                  <span className="mt-4 text-[10px] uppercase tracking-widest text-[oklch(0.8_0.15_60)] font-bold">
+                    Verified Buyer
+                  </span>
+                </div>
+              </div>
+            ))}
+            {/* Second loop of images (for infinite seamless marquee) */}
+            {CUSTOMER_REVIEWS.map((item, index) => (
+              <div
+                key={`rev-second-${index}`}
+                className="group relative mx-4 w-[280px] h-[350px] shrink-0 rounded-xl overflow-hidden border border-border/80 shadow-sm transition-all hover:shadow-lg bg-secondary/15"
+              >
+                <img
+                  src={item.img}
+                  alt={`Customer Review ${index + 1} clone`}
+                  className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-primary/95 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-6 text-center">
+                  <div className="flex gap-1 text-[oklch(0.72_0.17_55)] mb-3 text-lg">
+                    {"★".repeat(item.rating)}
+                  </div>
+                  <h4 className="font-display text-xl font-bold uppercase tracking-wide mb-2 text-white">
+                    {item.name}
+                  </h4>
+                  <p className="text-xs text-white/80 leading-relaxed italic whitespace-normal">
+                    "{item.text}"
+                  </p>
+                  <span className="mt-4 text-[10px] uppercase tracking-widest text-[oklch(0.8_0.15_60)] font-bold">
+                    Verified Buyer
+                  </span>
+                </div>
+              </div>
+            ))}
+            {/* Third loop of images (for infinite seamless marquee) */}
+            {CUSTOMER_REVIEWS.map((item, index) => (
+              <div
+                key={`rev-third-${index}`}
+                className="group relative mx-4 w-[280px] h-[350px] shrink-0 rounded-xl overflow-hidden border border-border/80 shadow-sm transition-all hover:shadow-lg bg-secondary/15"
+              >
+                <img
+                  src={item.img}
+                  alt={`Customer Review ${index + 1} clone 2`}
+                  className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Hover Overlay */}
+                <div className="absolute inset-0 bg-primary/95 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-6 text-center">
+                  <div className="flex gap-1 text-[oklch(0.72_0.17_55)] mb-3 text-lg">
+                    {"★".repeat(item.rating)}
+                  </div>
+                  <h4 className="font-display text-xl font-bold uppercase tracking-wide mb-2 text-white">
+                    {item.name}
+                  </h4>
+                  <p className="text-xs text-white/80 leading-relaxed italic whitespace-normal">
+                    "{item.text}"
+                  </p>
+                  <span className="mt-4 text-[10px] uppercase tracking-widest text-[oklch(0.8_0.15_60)] font-bold">
+                    Verified Buyer
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 05 — Contact */}
       <section id="contact" className="container scroll-mt-20 py-14 md:py-20">
         <p className="kicker mb-2">05 — Contact us</p>
@@ -275,8 +429,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-2 space-y-1.5 pl-8">
-                {CONTACT.emails.map((e) => (
-                  <a key={e} href={`mailto:${e}`} className="block text-sm font-semibold hover:underline">
+                {CONTACT.emails.map(e => (
+                  <a
+                    key={e}
+                    href={`mailto:${e}`}
+                    className="block text-sm font-semibold hover:underline"
+                  >
                     {e}
                   </a>
                 ))}
@@ -292,8 +450,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-2 space-y-1.5 pl-8">
-                {CONTACT.phones.map((p) => (
-                  <a key={p.number} href={`tel:${p.number}`} className="block text-sm font-semibold hover:underline">
+                {CONTACT.phones.map(p => (
+                  <a
+                    key={p.number}
+                    href={`tel:${p.number}`}
+                    className="block text-sm font-semibold hover:underline"
+                  >
                     {p.name}: {p.number}
                   </a>
                 ))}
@@ -316,6 +478,65 @@ export default function Home() {
               </div>
             </a>
 
+            {/* Social Channels */}
+            <div className="rounded-md border border-border bg-card p-4 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  Official Socials
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Follow us for updates & stock
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://wa.me/923332834567"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground transition-all hover:bg-[#25D366] hover:text-white"
+                >
+                  <WhatsAppIcon className="h-4.5 w-4.5" />
+                </a>
+                <a
+                  href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground transition-all hover:bg-[#FF0000] hover:text-white"
+                >
+                  <YouTubeIcon className="h-4.5 w-4.5" />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground transition-all hover:bg-black hover:text-white"
+                >
+                  <TikTokIcon className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground transition-all hover:bg-[#E1306C] hover:text-white"
+                >
+                  <InstagramIcon className="h-4.5 w-4.5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-foreground transition-all hover:bg-[#1877F2] hover:text-white"
+                >
+                  <FacebookIcon className="h-4.5 w-4.5" />
+                </a>
+              </div>
+            </div>
+
             {/* Showrooms */}
             <div className="rounded-md border border-border bg-card p-4">
               <div className="flex items-start gap-3">
@@ -326,15 +547,21 @@ export default function Home() {
                   </p>
                   <div className="mt-2 space-y-2 text-xs font-semibold">
                     <div>
-                      <span className="text-primary block text-[10px] uppercase font-bold">Cars</span>
+                      <span className="text-primary block text-[10px] uppercase font-bold">
+                        Cars
+                      </span>
                       <span>{CONTACT.showrooms.Car}</span>
                     </div>
                     <div>
-                      <span className="text-primary block text-[10px] uppercase font-bold">Tractors</span>
+                      <span className="text-primary block text-[10px] uppercase font-bold">
+                        Tractors
+                      </span>
                       <span>{CONTACT.showrooms.Tractor}</span>
                     </div>
                     <div>
-                      <span className="text-primary block text-[10px] uppercase font-bold">Bikes</span>
+                      <span className="text-primary block text-[10px] uppercase font-bold">
+                        Bikes
+                      </span>
                       <span>{CONTACT.showrooms.Bike}</span>
                     </div>
                   </div>
@@ -405,48 +632,50 @@ export default function Home() {
               spare parts since 2005.
             </p>
             <div className="mt-4 flex items-center gap-3">
-              {/* Social placeholders — demo links */}
               <a
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  toast("Facebook page coming soon");
-                }}
-                aria-label="Facebook"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold transition-colors hover:bg-[oklch(0.72_0.17_55)] hover:text-[oklch(0.2_0.05_255)]"
-              >
-                f
-              </a>
-              <a
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  toast("Instagram page coming soon");
-                }}
-                aria-label="Instagram"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold transition-colors hover:bg-[oklch(0.72_0.17_55)] hover:text-[oklch(0.2_0.05_255)]"
-              >
-                in
-              </a>
-              <a
-                href={whatsappUrl}
+                href="https://wa.me/923332834567"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold transition-colors hover:bg-[oklch(0.72_0.17_55)] hover:text-[oklch(0.2_0.05_255)]"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#25D366] hover:text-white"
               >
-                wa
+                <WhatsAppIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  toast("YouTube channel coming soon");
-                }}
+                href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="YouTube"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-bold transition-colors hover:bg-[oklch(0.72_0.17_55)] hover:text-[oklch(0.2_0.05_255)]"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#FF0000] hover:text-white"
               >
-                yt
+                <YouTubeIcon className="h-[18px] w-[18px]" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-black hover:text-white"
+              >
+                <TikTokIcon className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#E1306C] hover:text-white"
+              >
+                <InstagramIcon className="h-[18px] w-[18px]" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-[#1877F2] hover:text-white"
+              >
+                <FacebookIcon className="h-[18px] w-[18px]" />
               </a>
             </div>
           </div>
@@ -494,8 +723,8 @@ export default function Home() {
           ))}
         </div>
         <div className="container border-t border-white/15 py-5 text-xs text-white/60">
-          © 2026 Waseem Motors. Demo design concept — listings shown are
-          examples, not real ads.
+          © 1996 Waseem Motors. Serving the community with trust and integrity.
+          All rights are reserved.
         </div>
       </footer>
     </div>

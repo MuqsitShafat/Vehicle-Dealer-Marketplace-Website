@@ -5,7 +5,7 @@
  */
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { Search } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import {
@@ -99,9 +99,11 @@ export default function HeroSearch() {
         <h1 className="hero-animate max-w-2xl text-4xl font-display font-bold uppercase leading-[1.02] text-white md:text-6xl">
           Cars. Bikes. Tractors. <br className="hidden md:block" />
         </h1>
-        <p className="hero-animate mt-4 max-w-xl text-base text-white/85 md:text-lg">
-          Browse verified stock or sell your own vehicle — we handle the
-          listing, you get the buyers.
+        <p className="hero-animate mt-4 max-w-2xl text-sm md:text-base text-white/90 flex items-start sm:items-center gap-2 font-medium drop-shadow-sm">
+          <MapPin className="h-5 w-5 text-[oklch(0.72_0.17_55)] shrink-0 mt-0.5 sm:mt-0" />
+          <span>
+            Waseem Motors Darya Khan Road Bhakkar Near Noor Mehal — we handle the listing, you get the buyers.
+          </span>
         </p>
 
         {/* THE search card — type, brand, price range, location */}

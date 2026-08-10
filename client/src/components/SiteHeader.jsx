@@ -6,7 +6,7 @@
  */
 import { Link, useLocation } from "wouter";
 import { IMAGES } from "@/lib/data";
-import { Menu, X, Settings } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 
@@ -17,6 +17,7 @@ const NAV = [
   { label: "Tractors", href: "/tractors" },
   { label: "Spare Parts", href: "/spare-parts" },
   { label: "Booking", href: "/booking" },
+  { label: "Marketplace", href: "/marketplace" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -69,7 +70,7 @@ export default function SiteHeader() {
           <span className="text-[28px] font-display font-bold uppercase leading-none tracking-wide text-primary-foreground">
             Waseem
           </span>
-          <span className="mt-2.5 hidden text-[12px] font-bold uppercase tracking-[0.18em] text-[oklch(0.72_0.17_55)] sm:block">
+          <span className="mt-3.5 hidden text-[12px] font-bold uppercase tracking-[0.18em] text-[oklch(0.72_0.17_55)] sm:block tracking-tight">
             Motors
           </span>
         </Link>
@@ -84,7 +85,7 @@ export default function SiteHeader() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`nav-animate text-[16px] font-bold transition-colors ${
+                className={`nav-animate font-nav text-[16px] font-bold transition-colors ${
                   active
                     ? "text-[oklch(0.8_0.15_60)]"
                     : isSpecial
@@ -99,13 +100,6 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/admin"
-            className="btn-animate hidden items-center gap-1.5 rounded-md border border-primary-foreground/25 px-3 py-1.5 text-xs font-semibold text-primary-foreground/90 transition-colors hover:bg-primary-foreground/10 md:inline-flex"
-            title="Dealer dashboard"
-          >
-            <Settings className="h-3.5 w-3.5" /> Dealer Panel
-          </Link>
           <Link
             href="/sell"
             className="btn-animate rounded-md bg-[oklch(0.72_0.17_55)] px-4 py-2 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
@@ -138,13 +132,6 @@ export default function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/admin"
-            className="mt-2 block border-t border-primary-foreground/15 pt-2.5 text-sm font-semibold text-primary-foreground/85"
-            onClick={() => setOpen(false)}
-          >
-            Dealer Panel
-          </Link>
         </nav>
       )}
     </header>

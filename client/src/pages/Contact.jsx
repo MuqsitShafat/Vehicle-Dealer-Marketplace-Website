@@ -10,6 +10,13 @@ import {
   CheckCircle,
 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
+import {
+  WhatsAppIcon,
+  YouTubeIcon,
+  TikTokIcon,
+  InstagramIcon,
+  FacebookIcon,
+} from "@/components/SocialIcons";
 import { CONTACT } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import contactBg from "../assets/images/ContactImage.jpeg";
@@ -40,21 +47,21 @@ export default function Contact() {
       <SiteHeader />
 
       {/* Hero section */}
-      <div className="relative overflow-hidden min-h-[40vh] md:min-h-[50vh] flex items-center bg-primary py-12 text-primary-foreground">
+      <div className="relative overflow-hidden min-h-[40vh] md:min-h-[80vh] flex items-center bg-primary py-12 text-primary-foreground">
         <img
           src={contactBg}
           alt="Waseem Motors Showroom"
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-40"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/95 via-[oklch(0.25_0.055_255)]/85 to-[oklch(0.3_0.06_255)]/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/70 via-[oklch(0.25_0.055_255)]/50 to-[oklch(0.3_0.06_255)]/25" />
         <div className="container relative text-center w-full">
-          <p className="kicker mb-3 text-primary-foreground/80 tracking-[0.2em]">
+          <p className="kicker mb-3 text-primary-foreground tracking-[0.2em] font-bold drop-shadow">
             Dealership details
           </p>
-          <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
+          <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl drop-shadow-md text-white">
             Contact Waseem Motors
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-primary-foreground/75 md:text-base">
+          <p className="mx-auto mt-3 max-w-xl text-sm text-white md:text-base font-semibold drop-shadow-sm">
             Have questions about our vehicle stock or listing services? Drop us
             a line, visit our showroom, or chat on WhatsApp. We are here to
             help.
@@ -195,7 +202,7 @@ export default function Contact() {
                     Call Showrooms
                   </p>
                   <div className="space-y-2">
-                    {CONTACT.phones.map((p) => (
+                    {CONTACT.phones.map(p => (
                       <a
                         key={p.number}
                         href={`tel:${p.number}`}
@@ -205,8 +212,12 @@ export default function Contact() {
                           <Phone className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-card-foreground">{p.name}</p>
-                          <p className="text-[11px] text-muted-foreground">{p.number}</p>
+                          <p className="text-xs font-bold text-card-foreground">
+                            {p.name}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {p.number}
+                          </p>
                         </div>
                       </a>
                     ))}
@@ -228,8 +239,12 @@ export default function Contact() {
                       <MessageCircle className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-card-foreground">Muhammad Waseem Awan</p>
-                      <p className="text-[11px] text-muted-foreground">0333-2834567</p>
+                      <p className="text-xs font-bold text-card-foreground">
+                        Muhammad Waseem Awan
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        0333-2834567
+                      </p>
                     </div>
                   </a>
                 </div>
@@ -240,7 +255,7 @@ export default function Contact() {
                     Email Addresses
                   </p>
                   <div className="space-y-2">
-                    {CONTACT.emails.map((email) => (
+                    {CONTACT.emails.map(email => (
                       <a
                         key={email}
                         href={`mailto:${email}`}
@@ -249,11 +264,70 @@ export default function Contact() {
                         <div className="rounded-full bg-primary/10 p-1.5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                           <Mail className="h-4 w-4" />
                         </div>
-                        <p className="text-xs font-semibold text-card-foreground break-all">{email}</p>
+                        <p className="text-xs font-semibold text-card-foreground break-all">
+                          {email}
+                        </p>
                       </a>
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Social Media Card */}
+            <div className="reveal rounded-lg border border-border bg-card p-6 shadow-sm">
+              <h2 className="text-xl font-display font-bold uppercase tracking-tight">
+                Official Socials
+              </h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Follow our official channels for fresh arrivals and updates.
+              </p>
+              <div className="mt-5 flex items-center gap-3">
+                <a
+                  href="https://wa.me/923332834567"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-muted-foreground transition-all hover:bg-[#25D366] hover:text-white hover:scale-105"
+                >
+                  <WhatsAppIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-muted-foreground transition-all hover:bg-[#FF0000] hover:text-white hover:scale-105"
+                >
+                  <YouTubeIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-muted-foreground transition-all hover:bg-black hover:text-white hover:scale-105"
+                >
+                  <TikTokIcon className="h-4.5 w-4.5" />
+                </a>
+                <a
+                  href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-muted-foreground transition-all hover:bg-[#E1306C] hover:text-white hover:scale-105"
+                >
+                  <InstagramIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/60 text-muted-foreground transition-all hover:bg-[#1877F2] hover:text-white hover:scale-105"
+                >
+                  <FacebookIcon className="h-5 w-5" />
+                </a>
               </div>
             </div>
 
@@ -267,28 +341,40 @@ export default function Contact() {
                   <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
                     Showroom Locations
                   </p>
-                  
+
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-bold text-card-foreground">Cars Showroom</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Car}</p>
+                      <p className="text-xs font-bold text-card-foreground">
+                        Cars Showroom
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {CONTACT.showrooms.Car}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-bold text-card-foreground">Tractors Showroom</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Tractor}</p>
+                      <p className="text-xs font-bold text-card-foreground">
+                        Tractors Showroom
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {CONTACT.showrooms.Tractor}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-xs font-bold text-card-foreground">Bikes Showroom</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{CONTACT.showrooms.Bike}</p>
+                      <p className="text-xs font-bold text-card-foreground">
+                        Bikes Showroom
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {CONTACT.showrooms.Bike}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -303,7 +389,9 @@ export default function Contact() {
                     </p>
                     <div className="text-xs font-semibold mt-1 space-y-1">
                       <p>Monday — Saturday: 9:00 AM — 8:00 PM</p>
-                      <p className="text-muted-foreground font-normal">Sunday: Closed</p>
+                      <p className="text-muted-foreground font-normal">
+                        Sunday: Closed
+                      </p>
                     </div>
                   </div>
                 </div>

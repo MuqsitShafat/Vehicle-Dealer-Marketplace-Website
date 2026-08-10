@@ -252,4 +252,25 @@
     background: var(--signal);
     color: var(--signal-foreground);
   }
+
+  /* Nav items font */
+  .font-nav {
+    font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.03em;
+  }
+
+  /* Infinite marquee review scroll */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+  }
+
+  .animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
 }

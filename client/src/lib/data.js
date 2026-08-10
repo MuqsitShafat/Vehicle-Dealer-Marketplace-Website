@@ -23,6 +23,11 @@ import tractorsGridImg from "../assets/images/Tractors/Tractors_Main_Grid.jpg";
 import givingImage from "../assets/images/giving_image.jpeg";
 import sparePartsMainImg from "../assets/images/spare_parts_main_image.jpeg";
 import logoImg from "../assets/images/logo.png";
+import cd70Tank from "../assets/images/SpareParts/HondaTank_CD70.jpeg";
+import cd70BackLight from "../assets/images/SpareParts/Honda_CD70_BackLight.jpeg";
+import cd70BreakLeather from "../assets/images/SpareParts/Honda_CD70_BreakLeather.jpeg";
+import cd70SideLight from "../assets/images/SpareParts/Honda_CD70_SideLight.jpeg";
+import cd70Headlight from "../assets/images/SpareParts/Honda_CD70_headlight.jpeg";
 export const IMAGES = {
   hero: heroBg,
   logo: logoImg,
@@ -294,45 +299,38 @@ export const LISTINGS = [
 export const SPARE_PARTS = [
   {
     id: 1,
-    name: "Alternator 12V",
-    price: "Rs 12,500",
-    compatible: ["Toyota Corolla", "Hyundai Elantra", "Suzuki Swift"],
-    img: IMAGES.part1,
+    name: "Honda CD 70 Fuel Tank",
+    price: "Rs 3,800",
+    compatible: ["Honda CD 70", "Honda CD 70 Dream"],
+    img: cd70Tank,
   },
   {
     id: 2,
-    name: "Brake Pad Set (Front)",
-    price: "Rs 4,800",
-    compatible: ["Suzuki Swift", "Suzuki Alto", "Suzuki Mehran"],
-    img: IMAGES.part2,
+    name: "Honda CD 70 Back Light",
+    price: "Rs 450",
+    compatible: ["Honda CD 70", "Honda CG 125"],
+    img: cd70BackLight,
   },
   {
     id: 3,
-    name: "LED Headlight Pair",
-    price: "Rs 9,200",
-    compatible: ["Toyota Corolla", "Hyundai Tucson"],
-    img: IMAGES.part3,
+    name: "Honda CD 70 Brake Leather",
+    price: "Rs 350",
+    compatible: ["Honda CD 70", "Honda CG 125"],
+    img: cd70BreakLeather,
   },
   {
     id: 4,
-    name: "Timing Belt Kit",
-    price: "Rs 7,600",
-    compatible: ["Toyota Corolla", "Toyota Yaris"],
-    img: IMAGES.part1,
+    name: "Honda CD 70 Side Indicator Pair",
+    price: "Rs 600",
+    compatible: ["Honda CD 70", "Honda CG 125"],
+    img: cd70SideLight,
   },
   {
     id: 5,
-    name: "Battery 65AH",
-    price: "Rs 22,400",
-    compatible: ["Hyundai Tucson", "Massey Ferguson 240"],
-    img: IMAGES.part2,
-  },
-  {
-    id: 6,
-    name: "Chain Sprocket Set",
-    price: "Rs 3,100",
-    compatible: ["Honda CD 70", "Honda CG 125", "Honda CB 150F"],
-    img: IMAGES.part3,
+    name: "Honda CD 70 Headlight",
+    price: "Rs 950",
+    compatible: ["Honda CD 70", "Honda CG 125"],
+    img: cd70Headlight,
   },
 ];
 
