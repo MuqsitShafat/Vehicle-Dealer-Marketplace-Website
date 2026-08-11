@@ -89,7 +89,7 @@ export default function SiteHeader() {
                   active
                     ? "text-[oklch(0.8_0.15_60)]"
                     : isSpecial
-                      ? "text-sky-300 hover:text-sky-100"
+                      ? "text-red-900 hover:text-yellow-100"
                       : "text-primary-foreground/85 hover:text-primary-foreground"
                 }`}
               >
@@ -102,7 +102,7 @@ export default function SiteHeader() {
         <div className="flex items-center gap-2.5">
           <Link
             href="/sell"
-            className="btn-animate rounded-md bg-[oklch(0.72_0.17_55)] px-4 py-2 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
+            className="btn-animate rounded-md bg-[oklch(0.72_0.17_55)] px-4 py-2 text-sm font-bold text-[#1e1e1e] transition-shadow hover:shadow-lg"
           >
             Sell Your Vehicle
           </Link>

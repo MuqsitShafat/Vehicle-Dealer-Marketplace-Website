@@ -42,6 +42,11 @@ export default function ListingCard({ item }) {
                 <BadgeCheck className="h-3.5 w-3.5 text-primary" /> Verified
               </span>
             )}
+            {item.bookingEnabled && (
+              <span className="inline-flex items-center gap-1 rounded-sm bg-[#25D366] px-2 py-1 text-[10px] font-bold text-white shadow-sm uppercase tracking-wide">
+                Booking available
+              </span>
+            )}
           </div>
           {isSold && (
             <div className="absolute inset-0 flex items-center justify-center bg-primary/60">

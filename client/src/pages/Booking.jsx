@@ -2,17 +2,22 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Calendar, Phone, Mail, ArrowRight, MessageCircle } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
-import { CONTACT } from "@/lib/data";
+import ListingCard from "@/components/ListingCard";
+import { CONTACT, getCurrentListings } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
+import { WhatsAppIcon } from "@/components/SocialIcons";
 
 export default function Booking() {
   useReveal();
+  const [listings] = useState(() => getCurrentListings());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [interest, setInterest] = useState("Car");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const bookingListings = listings.filter((l) => l.bookingEnabled && l.status === "Live");
+
+  const handleSubmit = e => {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) {
       toast.error("Please fill in your name and phone number.");
@@ -26,25 +31,58 @@ export default function Booking() {
     <div className="min-h-screen bg-secondary/30">
       <SiteHeader />
 
-      <div className="container py-16 text-center max-w-3xl">
-        <div className="reveal inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
-          <Calendar className="h-3.5 w-3.5" /> Coming Soon
+      <div className="container py-16">
+        <div className="text-center max-w-3xl mx-auto">
+          <div className="reveal inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
+            <Calendar className="h-3.5 w-3.5" /> Book Your Vehicle
+          </div>
+
+          <h1 className="reveal mt-6 text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
+            Online Vehicle Booking
+          </h1>
+
+          <p className="reveal mx-auto mt-4 max-w-xl text-base text-muted-foreground md:text-lg">
+            Reserve your selected cars, bikes, or tractors directly from our website. Place a hold by selecting a vehicle below and contacting our support desk.
+          </p>
         </div>
-        
-        <h1 className="reveal mt-6 text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
-          Online Vehicle Booking
-        </h1>
-        
-        <p className="reveal mx-auto mt-4 max-w-xl text-base text-muted-foreground md:text-lg">
-          We are building a seamless online booking portal. Soon, you will be able to reserve your selected cars, bikes, or tractors directly from our website with a small deposit.
-        </p>
+
+        {/* Vehicles Available for Booking Grid */}
+        {bookingListings.length > 0 ? (
+          <div className="mt-12">
+            <h2 className="text-2xl font-display font-bold uppercase tracking-tight text-center mb-8">
+              Vehicles Available for Booking
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {bookingListings.map((item, i) => (
+                <div
+                  key={item.id}
+                  className="reveal"
+                  style={{ transitionDelay: `${i * 50}ms` }}
+                >
+                  <ListingCard item={item} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="reveal mt-12 rounded-lg border border-dashed border-border bg-card p-12 text-center max-w-xl mx-auto">
+            <Calendar className="mx-auto h-10 w-10 text-muted-foreground animate-pulse" />
+            <p className="mt-3 font-display text-xl font-bold uppercase">No vehicles currently listed for booking</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Our online reservation portal is rolling out. In the meantime, you can place a hold on any vehicle by contacting our desk below.
+            </p>
+          </div>
+        )}
 
         {/* Info Cards */}
-        <div className="reveal mt-12 grid gap-6 sm:grid-cols-2 text-left">
+        <div className="reveal mt-16 grid gap-6 md:grid-cols-2 text-left max-w-4xl mx-auto">
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h3 className="font-display text-xl font-bold uppercase tracking-tight">Need immediate booking?</h3>
+            <h3 className="font-display text-xl font-bold uppercase tracking-tight">
+              Need immediate booking?
+            </h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              You can still book any vehicle in our stock today! Contact our dealership desk directly by phone or WhatsApp to place a hold.
+              You can still book any vehicle in our stock today! Contact our
+              dealership desk directly by phone or WhatsApp to place a hold.
             </p>
             <div className="mt-5 space-y-3.5">
               <div>
@@ -73,7 +111,7 @@ export default function Booking() {
                   rel="noreferrer"
                   className="flex items-center gap-2 text-xs font-semibold text-[#25D366] hover:underline"
                 >
-                  <MessageCircle className="h-3.5 w-3.5" /> Chat: 0333-2834567
+                  <WhatsAppIcon className="h-4 w-4" /> Muhammad Waseem Awan: 0333-2834567
                 </a>
               </div>
             </div>
@@ -82,16 +120,23 @@ export default function Booking() {
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             {submitted ? (
               <div className="flex h-full flex-col items-center justify-center text-center">
-                <p className="font-display text-lg font-bold uppercase text-primary">Request Saved!</p>
+                <p className="font-display text-lg font-bold uppercase text-primary">
+                  Request Saved!
+                </p>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  We have noted your interest in booking a <strong>{interest}</strong>. Our team will contact you at <strong>{phone}</strong> soon.
+                  We have noted your interest in booking a{" "}
+                  <strong>{interest}</strong>. Our team will contact you at{" "}
+                  <strong>{phone}</strong> soon.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <h3 className="font-display text-xl font-bold uppercase tracking-tight">Get Notified</h3>
+                <h3 className="font-display text-xl font-bold uppercase tracking-tight">
+                  Get Notified
+                </h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Leave your details and we will notify you as soon as booking goes live!
+                  Leave your details and we will notify you as soon as booking
+                  goes live!
                 </p>
                 <div className="mt-4 space-y-3">
                   <input

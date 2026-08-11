@@ -49,42 +49,42 @@
 }
 
 :root {
-  --primary: oklch(0.28 0.06 255);
-  --primary-foreground: oklch(0.985 0.005 255);
-  --sidebar-primary: oklch(0.28 0.06 255);
-  --sidebar-primary-foreground: oklch(0.985 0.005 255);
-  --chart-1: oklch(0.6 0.1 255);
-  --chart-2: oklch(0.45 0.08 255);
-  --chart-3: oklch(0.28 0.06 255);
+  --primary: oklch(0.60 0.21 25);
+  --primary-foreground: oklch(0.985 0.005 25);
+  --sidebar-primary: oklch(0.60 0.21 25);
+  --sidebar-primary-foreground: oklch(0.985 0.005 25);
+  --chart-1: oklch(0.60 0.21 25);
+  --chart-2: oklch(0.45 0.15 25);
+  --chart-3: oklch(0.60 0.21 25);
   --chart-4: oklch(0.72 0.17 55);
-  --chart-5: oklch(0.22 0.05 255);
+  --chart-5: oklch(0.40 0.15 25);
   --radius: 0.5rem;
   --background: oklch(0.995 0 0);
-  --foreground: oklch(0.24 0.04 255);
+  --foreground: oklch(0.24 0.01 25);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.04 255);
+  --card-foreground: oklch(0.24 0.01 25);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.04 255);
-  --secondary: oklch(0.96 0.008 255);
-  --secondary-foreground: oklch(0.32 0.06 255);
-  --muted: oklch(0.955 0.008 255);
-  --muted-foreground: oklch(0.5 0.03 255);
+  --popover-foreground: oklch(0.24 0.01 25);
+  --secondary: oklch(0.96 0.008 25);
+  --secondary-foreground: oklch(0.32 0.02 25);
+  --muted: oklch(0.955 0.008 25);
+  --muted-foreground: oklch(0.5 0.01 25);
   --accent: oklch(0.93 0.04 70);
-  --accent-foreground: oklch(0.28 0.06 255);
+  --accent-foreground: oklch(0.60 0.21 25);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.9 0.01 255);
-  --input: oklch(0.9 0.01 255);
-  --ring: oklch(0.28 0.06 255);
+  --border: oklch(0.9 0.01 25);
+  --input: oklch(0.9 0.01 25);
+  --ring: oklch(0.60 0.21 25);
   --signal: oklch(0.72 0.17 55);
   --signal-foreground: oklch(0.99 0.005 85);
-  --ink: oklch(0.22 0.05 255);
+  --ink: oklch(0.22 0.01 25);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.24 0.04 255);
+  --sidebar-foreground: oklch(0.24 0.01 25);
   --sidebar-accent: oklch(0.93 0.04 70);
-  --sidebar-accent-foreground: oklch(0.28 0.06 255);
-  --sidebar-border: oklch(0.9 0.01 255);
-  --sidebar-ring: oklch(0.28 0.06 255);
+  --sidebar-accent-foreground: oklch(0.60 0.21 25);
+  --sidebar-border: oklch(0.9 0.01 25);
+  --sidebar-ring: oklch(0.60 0.21 25);
 }
 
 .dark {
@@ -269,7 +269,8 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 25s linear infinite;
+  flex-shrink: 0;
+  animation: marquee 23s linear infinite;
 }
 .animate-marquee:hover {
   animation-play-state: paused;

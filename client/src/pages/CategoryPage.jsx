@@ -7,12 +7,13 @@ import { useMemo, useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
-import { LISTINGS, BRANDS, CATEGORIES } from "@/lib/data";
+import { getCurrentListings, BRANDS, CATEGORIES } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 
 export default function CategoryPage({ category }) {
   useReveal();
   const [brand, setBrand] = useState("any");
+  const [listings] = useState(() => getCurrentListings());
 
   // Reset selected brand when switching categories (e.g. from Bike to Car)
   useEffect(() => {
@@ -21,12 +22,14 @@ export default function CategoryPage({ category }) {
 
   const items = useMemo(
     () =>
-      LISTINGS.filter(
+      listings.filter(
         (l) =>
           l.category === category &&
+          l.source === "dealer" &&
+          l.status === "Live" &&
           (brand === "any" || l.brand === brand),
       ),
-    [category, brand],
+    [listings, category, brand],
   );
 
   const meta = CATEGORIES.find((c) => c.name === category);
@@ -42,15 +45,15 @@ export default function CategoryPage({ category }) {
           alt={category}
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/95 to-[oklch(0.22_0.05_255)]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e63946]/95 to-[#e63946]/50" />
         <div className="container relative py-12 md:py-16">
-          <p className="kicker mb-2 text-[oklch(0.8_0.15_60)]">Waseem stock</p>
+          <p className="kicker mb-2 text-white/90">Waseem stock</p>
           <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
             {category === "Car" ? "Cars" : category + "s"}
           </h1>
           <p className="mt-2 max-w-xl text-sm text-white/80">
             {meta?.tagline}. Browse what's in stock, or{" "}
-            <a href="/sell" className="font-bold text-[oklch(0.8_0.15_60)] underline">
+            <a href="/sell" className="font-bold text-white/90 underline">
               list your own
             </a>
             .

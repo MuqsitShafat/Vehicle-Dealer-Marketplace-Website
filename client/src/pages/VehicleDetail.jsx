@@ -20,7 +20,8 @@ import {
 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
-import { LISTINGS, CONTACT, IMAGES } from "@/lib/data";
+import { useState } from "react";
+import { getCurrentListings, CONTACT, IMAGES } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import InfiniteCarousel from "@/components/ui/InfiniteCarousel";
 
@@ -28,14 +29,15 @@ export default function VehicleDetail() {
   useReveal();
   const [, params] = useRoute("/vehicle/:id");
   const [, navigate] = useLocation();
+  const [listings] = useState(() => getCurrentListings());
   const id = Number(params?.id);
-  const item = LISTINGS.find((l) => l.id === id);
-  const car = item ?? LISTINGS[0];
+  const item = listings.find((l) => l.id === id);
+  const car = item ?? listings[0];
 
   const isSold = car.status === "Sold";
   const isPending = car.status === "Pending";
 
-  const related = LISTINGS.filter(
+  const related = listings.filter(
     (l) => l.id !== car.id && l.category === car.category && l.status === "Live",
   ).slice(0, 3);
 

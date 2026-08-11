@@ -90,19 +90,20 @@ export default function HeroSearch() {
         alt="Waseem dealership showroom with a dark-blue SUV at golden hour"
         className="absolute inset-0 h-full w-full object-cover object-top"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/92 via-[oklch(0.25_0.055_255)]/80 to-[oklch(0.3_0.06_255)]/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#e63946]/90 via-[#e63946]/60 to-transparent" />
 
       <div ref={containerRef} className="container relative w-full">
         <p className="hero-animate mb-3 text-sm font-bold uppercase tracking-[0.18em] text-[oklch(0.8_0.15_60)]">
           Your trusted dealership
         </p>
         <h1 className="hero-animate max-w-2xl text-4xl font-display font-bold uppercase leading-[1.02] text-white md:text-6xl">
-          Cars. Bikes. Tractors. <br className="hidden md:block" />
+          Cars | Bikes | Tractors <br className="hidden md:block" />
         </h1>
         <p className="hero-animate mt-4 max-w-2xl text-sm md:text-base text-white/90 flex items-start sm:items-center gap-2 font-medium drop-shadow-sm">
           <MapPin className="h-5 w-5 text-[oklch(0.72_0.17_55)] shrink-0 mt-0.5 sm:mt-0" />
           <span>
-            Waseem Motors Darya Khan Road Bhakkar Near Noor Mehal — we handle the listing, you get the buyers.
+            Waseem Motors Darya Khan Road Bhakkar Near Noor Mehal — we handle
+            the listing, you get the buyers.
           </span>
         </p>
 

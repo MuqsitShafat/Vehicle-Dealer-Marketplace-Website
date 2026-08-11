@@ -53,7 +53,7 @@ export default function Contact() {
           alt="Waseem Motors Showroom"
           className="absolute inset-0 h-full w-full object-cover object-center opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/70 via-[oklch(0.25_0.055_255)]/50 to-[oklch(0.3_0.06_255)]/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e63946]/70 via-[#e63946]/50 to-[#e63946]/25" />
         <div className="container relative text-center w-full">
           <p className="kicker mb-3 text-primary-foreground tracking-[0.2em] font-bold drop-shadow">
             Dealership details

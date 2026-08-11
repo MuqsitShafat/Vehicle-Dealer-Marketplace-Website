@@ -9,6 +9,7 @@ import { Camera, Plus, X, CheckCircle2 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import { CATEGORIES, IMAGES } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
+import { WhatsAppIcon } from "@/components/SocialIcons";
 
 function loadSubmissions() {
   try {
@@ -30,19 +31,19 @@ export default function SellPage() {
   const [photos, setPhotos] = useState([]);
   const [submitted, setSubmitted] = useState(false);
 
-  const onPhotos = (files) => {
+  const onPhotos = files => {
     if (!files) return;
     const next = [];
-    Array.from(files).forEach((file) => {
+    Array.from(files).forEach(file => {
       if (next.length + photos.length >= 4) return;
       const reader = new FileReader();
       reader.onload = () => next.push(reader.result);
       reader.readAsDataURL(file);
     });
-    setTimeout(() => setPhotos((p) => [...p, ...next]), 100);
+    setTimeout(() => setPhotos(p => [...p, ...next]), 100);
   };
 
-  const submit = (e) => {
+  const submit = e => {
     e.preventDefault();
     if (!title.trim() || !price.trim() || !name.trim() || !phone.trim()) {
       toast.error("Please fill in the title, price and your contact details.");
@@ -63,7 +64,7 @@ export default function SellPage() {
     };
     localStorage.setItem(
       "waseem_submissions",
-      JSON.stringify([...loadSubmissions(), item]),
+      JSON.stringify([...loadSubmissions(), item])
     );
     setSubmitted(true);
     toast.success("Submission received — awaiting dealer approval.");
@@ -79,9 +80,10 @@ export default function SellPage() {
             Submission received!
           </h1>
           <p className="mt-3 max-w-md text-sm text-muted-foreground">
-            Your {type.toLowerCase()} listing is now <strong>Pending review</strong>.
-            Our dealer team approves every submission within 24 hours — you'll
-            be contacted on the number you provided.
+            Your {type.toLowerCase()} listing is now{" "}
+            <strong>Pending review</strong>. Our dealer team approves every
+            submission within 24 hours — you'll be contacted on the number you
+            provided.
           </p>
           <button
             onClick={() => {
@@ -113,9 +115,9 @@ export default function SellPage() {
           alt="Selling your vehicle"
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/95 to-[oklch(0.22_0.05_255)]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e63946]/95 to-[#e63946]/50" />
         <div className="container relative py-12 md:py-16">
-          <p className="kicker mb-2 text-[oklch(0.8_0.15_60)]">Free listing</p>
+          <p className="kicker mb-2 text-white/90">Free listing</p>
           <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
             Sell Your Vehicle
           </h1>
@@ -127,14 +129,17 @@ export default function SellPage() {
       </div>
 
       <div className="container py-10 lg:grid lg:grid-cols-[1.3fr_1fr] lg:gap-10">
-        <form onSubmit={submit} className="reveal flex flex-col gap-5 rounded-lg border border-border bg-card p-6 shadow-sm">
+        <form
+          onSubmit={submit}
+          className="reveal flex flex-col gap-5 rounded-lg border border-border bg-card p-6 shadow-sm"
+        >
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 Vehicle type
               </label>
               <div className="mt-1 grid grid-cols-3 gap-2">
-                {CATEGORIES.map((c) => (
+                {CATEGORIES.map(c => (
                   <button
                     key={c.name}
                     type="button"
@@ -156,7 +161,7 @@ export default function SellPage() {
               </label>
               <input
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={e => setTitle(e.target.value)}
                 placeholder="e.g. Toyota Corolla Altis"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
@@ -167,7 +172,7 @@ export default function SellPage() {
               </label>
               <input
                 value={year}
-                onChange={(e) => setYear(e.target.value)}
+                onChange={e => setYear(e.target.value)}
                 placeholder="e.g. 2021"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
@@ -178,7 +183,7 @@ export default function SellPage() {
               </label>
               <input
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={e => setPrice(e.target.value)}
                 placeholder="e.g. 7250000"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
@@ -191,7 +196,7 @@ export default function SellPage() {
             </label>
             <textarea
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               rows={4}
               placeholder="Condition, mileage, registration city, any repairs..."
               className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
@@ -208,10 +213,16 @@ export default function SellPage() {
                   key={i}
                   className="relative aspect-square overflow-hidden rounded-md border border-border"
                 >
-                  <img src={p} alt={`Upload ${i + 1}`} className="h-full w-full object-cover" />
+                  <img
+                    src={p}
+                    alt={`Upload ${i + 1}`}
+                    className="h-full w-full object-cover"
+                  />
                   <button
                     type="button"
-                    onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))}
+                    onClick={() =>
+                      setPhotos(ps => ps.filter((_, j) => j !== i))
+                    }
                     className="absolute right-1 top-1 rounded-full bg-primary p-1 text-white"
                     aria-label="Remove photo"
                   >
@@ -228,7 +239,7 @@ export default function SellPage() {
                     accept="image/*"
                     multiple
                     className="hidden"
-                    onChange={(e) => onPhotos(e.target.files)}
+                    onChange={e => onPhotos(e.target.files)}
                   />
                 </label>
               )}
@@ -242,7 +253,7 @@ export default function SellPage() {
               </label>
               <input
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={e => setName(e.target.value)}
                 placeholder="Full name"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
@@ -253,19 +264,29 @@ export default function SellPage() {
               </label>
               <input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={e => setPhone(e.target.value)}
                 placeholder="+92 300 1234567"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
-          >
-            Submit for approval
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              type="submit"
+              className="rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
+            >
+              Submit for approval
+            </button>
+            <a
+              href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem Motors, I would like to submit my ${type} (${title || "Vehicle"}) for approval and listing.`)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 px-6 py-3 text-sm font-bold transition-all cursor-pointer"
+            >
+              <WhatsAppIcon className="h-4 w-4" /> Send message on WhatsApp
+            </a>
+          </div>
           <p className="text-[11px] text-muted-foreground">
             Your listing stays pending until a dealer approves it. We never
             share your contact details publicly.
@@ -274,7 +295,9 @@ export default function SellPage() {
 
         <aside className="reveal mt-8 lg:mt-0">
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 className="text-xl font-display font-bold">What happens next?</h2>
+            <h2 className="text-xl font-display font-bold">
+              What happens next?
+            </h2>
             <ol className="mt-4 space-y-4 text-sm">
               {[
                 ["1", "You submit the form — it takes under two minutes."],
@@ -283,7 +306,9 @@ export default function SellPage() {
                 ["4", "Buyers contact you directly by phone or WhatsApp."],
               ].map(([n, t]) => (
                 <li key={n} className="flex gap-3">
-                  <span className="font-display text-lg font-bold text-primary">{n}</span>
+                  <span className="font-display text-lg font-bold text-primary">
+                    {n}
+                  </span>
                   <span className="text-muted-foreground">{t}</span>
                 </li>
               ))}

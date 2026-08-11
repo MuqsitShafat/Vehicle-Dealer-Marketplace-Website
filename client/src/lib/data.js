@@ -403,18 +403,87 @@ export const CONTACT = {
   whatsapp: "03332834567",
   address: "Darya Khan Road, Bhakkar, Punjab, Pakistan",
   hours: "Mon – Sat: 9:00 AM – 8:00 PM",
-  emails: [
-    "waseemmotors77@gmail.com",
-    "waseemhondabhakkar@gmail.com"
-  ],
+  emails: ["waseemmotors77@gmail.com", "waseemhondabhakkar@gmail.com"],
   phones: [
     { name: "Muhammad Akash Awan", number: "03121537773" },
     { name: "Muhammad Waseem Awan", number: "03332834567" },
-    { name: "Abdul Sattar Awan", number: "03007789481" }
+    { name: "Abdul Sattar Awan", number: "03007789481" },
   ],
   showrooms: {
     Car: "Waseem Motors Darya Khan Road Bhakkar Near Noor Mehal",
     Tractor: "Waseem Tractors Darya Khan Road Bhakkar Near Punjab College",
-    Bike: "Waseem Honda Bhakkar Near DHQ Hospital Bhakkar Khansar Road"
-  }
+    Bike: "Waseem Honda Bhakkar Near DHQ Hospital Bhakkar Khansar Road",
+  },
 };
+
+export function getCurrentListings() {
+  if (typeof window === "undefined") return LISTINGS;
+  try {
+    const raw = localStorage.getItem("waseem_dealer_listings");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Restore dynamic imports for static listings so they don't break on new builds
+        return parsed.map((item) => {
+          const staticItem = LISTINGS.find((l) => l.id === item.id);
+          if (staticItem) {
+            return {
+              ...item,
+              img: staticItem.img,
+              images: staticItem.images,
+              source: item.source || "dealer",
+              bookingEnabled: item.bookingEnabled || false,
+            };
+          }
+          return {
+            ...item,
+            bookingEnabled: item.bookingEnabled || false,
+          };
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error reading listings from localStorage", e);
+  }
+
+  // Seed default listings
+  const seeded = LISTINGS.map(item => ({ ...item, source: "dealer", bookingEnabled: false }));
+  try {
+    localStorage.setItem("waseem_dealer_listings", JSON.stringify(seeded));
+  } catch (e) {
+    console.error("Error seeding listings to localStorage", e);
+  }
+  return seeded;
+}
+
+export function getCurrentSpareParts() {
+  if (typeof window === "undefined") return SPARE_PARTS;
+  try {
+    const raw = localStorage.getItem("waseem_spare_parts");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((item) => {
+          const staticItem = SPARE_PARTS.find((p) => p.id === item.id);
+          if (staticItem) {
+            return {
+              ...item,
+              img: staticItem.img,
+            };
+          }
+          return item;
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Error reading spare parts from localStorage", e);
+  }
+
+  // Seed default spare parts
+  try {
+    localStorage.setItem("waseem_spare_parts", JSON.stringify(SPARE_PARTS));
+  } catch (e) {
+    console.error("Error seeding spare parts to localStorage", e);
+  }
+  return SPARE_PARTS;
+}

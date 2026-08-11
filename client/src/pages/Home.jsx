@@ -31,7 +31,7 @@ import {
   InstagramIcon,
   FacebookIcon,
 } from "@/components/SocialIcons";
-import { LISTINGS, CATEGORIES, SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
+import { getCurrentListings, CATEGORIES, SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
 import rev1 from "@/assets/images/Reviews/1.jpeg";
 import rev2 from "@/assets/images/Reviews/2.jpeg";
 import rev3 from "@/assets/images/Reviews/3.jpeg";
@@ -90,6 +90,7 @@ const FOOTER_LINKS = [
 
 export default function Home() {
   useReveal();
+  const [listings] = useState(() => getCurrentListings());
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
@@ -166,7 +167,7 @@ export default function Home() {
                 alt={c.name}
                 className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.22_0.05_255)]/90 via-[oklch(0.22_0.05_255)]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#e63946]/90 via-[#e63946]/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <h3 className="text-2xl font-display font-bold uppercase tracking-wide text-white">
                   {c.name === "Car" ? "Cars" : c.name + "s"}
@@ -200,12 +201,12 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {LISTINGS.filter(l => l.status === "Live")
+            {listings.filter(l => l.status === "Live" && l.source === "dealer")
               .slice(0, 6)
               .map((item, i) => (
                 <div
                   key={item.id}
-                  className="reveal"
+                  className={`reveal ${i >= 4 ? "hidden sm:block" : ""}`}
                   style={{ transitionDelay: `${i * 50}ms` }}
                 >
                   <ListingCard item={item} />
@@ -292,7 +293,7 @@ export default function Home() {
             </div>
             <Link
               href="/sell"
-              className="mt-7 inline-flex items-center gap-2 rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
+              className="mt-7 inline-flex items-center gap-2 rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[#1e1e1e] transition-shadow hover:shadow-lg"
             >
               Sell your vehicle
             </Link>
@@ -303,9 +304,9 @@ export default function Home() {
               alt="Dealer forecourt"
               className="h-72 w-full object-cover lg:h-96"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.22_0.05_255)]/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#e63946]/70 to-transparent" />
             <p className="absolute bottom-4 left-4 text-sm font-bold text-white">
-              {LISTINGS.length}+ vehicles sold through Waseem
+              {listings.length}+ vehicles sold through Waseem
             </p>
           </div>
         </div>
@@ -322,7 +323,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="relative flex overflow-x-hidden py-4 border-y border-border bg-card">
+        <div className="relative overflow-x-hidden py-4 border-y border-border bg-card">
           <div className="animate-marquee flex whitespace-nowrap">
             {/* First loop of images */}
             {CUSTOMER_REVIEWS.map((item, index) => (

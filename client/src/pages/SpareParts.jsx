@@ -2,15 +2,20 @@
  * Waseem — Spare Parts page.
  * Grid: image, name, price, compatible vehicle models, WhatsApp inquiry button.
  */
+import React, { useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
-import { SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
+import { getCurrentSpareParts, IMAGES } from "@/lib/data";
 import { Wrench, Car } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 
 export default function SpareParts() {
   useReveal();
+  const [parts] = useState(() => getCurrentSpareParts());
+
   const wa = (name, price) =>
-    `https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem, I'm interested in: ${name} (${price})`)}`;
+    `https://wa.me/923332834567?text=${encodeURIComponent(
+      `Hi Waseem, I'm interested in: ${name} (${price})`
+    )}`;
 
   return (
     <div className="min-h-screen">
@@ -22,9 +27,9 @@ export default function SpareParts() {
           alt="Spare parts shelf"
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.22_0.05_255)]/95 to-[oklch(0.22_0.05_255)]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#e63946]/95 to-[#e63946]/50" />
         <div className="container relative py-12 md:py-16">
-          <p className="kicker mb-2 text-[oklch(0.8_0.15_60)]">Genuine parts</p>
+          <p className="kicker mb-2 text-white/90">Genuine parts</p>
           <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
             Spare Parts
           </h1>
@@ -37,10 +42,10 @@ export default function SpareParts() {
 
       <div className="container py-10">
         <p className="text-sm font-semibold text-muted-foreground">
-          {SPARE_PARTS.length} parts in the parts counter
+          {parts.length} parts in the parts counter
         </p>
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SPARE_PARTS.map((part, i) => (
+          {parts.map((part, i) => (
             <div
               key={part.id}
               className="reveal flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
