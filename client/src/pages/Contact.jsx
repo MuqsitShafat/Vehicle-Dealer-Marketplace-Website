@@ -235,8 +235,8 @@ export default function Contact() {
                     rel="noreferrer"
                     className="flex items-center gap-3 rounded-md border border-border bg-[#25D366]/5 p-2.5 hover:border-[#25D366]/50 transition-colors group text-left"
                   >
-                    <div className="rounded-full bg-[#25D366]/10 p-1.5 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-colors">
-                      <MessageCircle className="h-4 w-4" />
+                    <div className="rounded-full bg-[#25D366]/10 p-1.5 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-colors flex items-center justify-center">
+                      <WhatsAppIcon className="h-4 w-4 shrink-0" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-card-foreground">
@@ -388,9 +388,9 @@ export default function Contact() {
                       Opening Hours
                     </p>
                     <div className="text-xs font-semibold mt-1 space-y-1">
-                      <p>Monday — Saturday: 9:00 AM — 8:00 PM</p>
+                      <p>Monday — Thursday, Saturday — Sunday: 9:00 AM — 8:00 PM</p>
                       <p className="text-muted-foreground font-normal">
-                        Sunday: Closed
+                        Friday: Off
                       </p>
                     </div>
                   </div>

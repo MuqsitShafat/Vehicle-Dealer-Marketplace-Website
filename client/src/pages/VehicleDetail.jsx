@@ -24,6 +24,7 @@ import { useState } from "react";
 import { getCurrentListings, CONTACT, IMAGES } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import InfiniteCarousel from "@/components/ui/InfiniteCarousel";
+import { WhatsAppIcon } from "@/components/SocialIcons";
 
 export default function VehicleDetail() {
   useReveal();
@@ -57,8 +58,8 @@ export default function VehicleDetail() {
         </button>
       </div>
 
-      <div className="container pb-14 lg:grid lg:grid-cols-[1.5fr_1fr] lg:gap-10">
-        <div className="reveal">
+      <div className="container pb-14 grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
+        <div className="reveal order-1">
           <div className="overflow-hidden rounded-lg border border-border bg-card aspect-video w-full relative">
             {car.images && car.images.length > 1 ? (
               <InfiniteCarousel
@@ -120,23 +121,10 @@ export default function VehicleDetail() {
               </div>
             ))}
           </div>
-
-          {related.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-2xl font-display font-bold uppercase tracking-tight">
-                Similar in {car.category.toLowerCase()}s
-              </h2>
-              <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {related.map((r) => (
-                  <ListingCard key={r.id} item={r} />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right rail: price + action */}
-        <aside className="reveal mt-8 lg:mt-0">
+        <aside className="reveal order-2 mt-8 lg:mt-0">
           <div className="sticky top-20 rounded-lg border border-border bg-card p-6">
             <div className="flex items-center justify-between">
               <span className="price-chip text-xl">{car.price}</span>
@@ -168,9 +156,9 @@ export default function VehicleDetail() {
                   href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="block w-full rounded-md bg-[#25D366] py-3 text-center text-sm font-bold text-white transition-shadow hover:shadow-lg"
+                  className="flex items-center justify-center gap-2 w-full rounded-md bg-[#25D366] py-3 text-sm font-bold text-white transition-shadow hover:shadow-lg"
                 >
-                  <MessageCircle className="mr-2 inline h-4 w-4" /> WhatsApp Dealer
+                  <WhatsAppIcon className="h-4.5 w-4.5 shrink-0" /> WhatsApp Dealer
                 </a>
                 
                 <div className="rounded-md border border-border bg-secondary/15 p-3">
@@ -210,6 +198,22 @@ export default function VehicleDetail() {
             </div>
           </div>
         </aside>
+
+        {/* Related listings bottom row */}
+        <div className="order-3 lg:col-span-2 mt-12">
+          {related.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-display font-bold uppercase tracking-tight">
+                Similar in {car.category.toLowerCase()}s
+              </h2>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((r) => (
+                  <ListingCard key={r.id} item={r} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

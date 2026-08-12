@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import { useReveal } from "@/hooks/useReveal";
-import { getCurrentListings, getCurrentSpareParts, IMAGES } from "@/lib/data";
+import { getCurrentListings, getCurrentSpareParts, getBrandFromTitle, IMAGES } from "@/lib/data";
 
 function saveDealerListings(listings) {
   localStorage.setItem("waseem_dealer_listings", JSON.stringify(listings));
@@ -113,6 +113,7 @@ export default function Admin() {
           img: editPhotos[0] || l.img,
           images: editPhotos,
           bookingEnabled: editBookingEnabled,
+          brand: getBrandFromTitle(editTitle, editCategory),
         };
       }
       return l;
@@ -181,6 +182,8 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
+  const [bookingInquiries, setBookingInquiries] = useState([]);
+
   useEffect(() => {
     try {
       setPublicSubs(
@@ -189,7 +192,21 @@ export default function Admin() {
     } catch {
       setPublicSubs([]);
     }
+    try {
+      setBookingInquiries(
+        JSON.parse(localStorage.getItem("waseem_booking_inquiries") || "[]")
+      );
+    } catch {
+      setBookingInquiries([]);
+    }
   }, [tab]);
+
+  const removeInquiry = (id) => {
+    const updated = bookingInquiries.filter(i => i.id !== id);
+    setBookingInquiries(updated);
+    localStorage.setItem("waseem_booking_inquiries", JSON.stringify(updated));
+    toast.success("Inquiry removed.");
+  };
 
   const live = dealer.filter(l => l.status === "Live").length;
   const sold = dealer.filter(l => l.status === "Sold").length;
@@ -264,6 +281,7 @@ export default function Admin() {
             ],
       days: "Just now",
       bookingEnabled: bookingEnabled,
+      brand: getBrandFromTitle(title, category),
     };
     const updated = [next, ...dealer];
     setDealer(updated);
@@ -318,6 +336,7 @@ export default function Admin() {
       img,
       images: sub.photos && sub.photos.length > 0 ? sub.photos : [img],
       days: "Today",
+      brand: getBrandFromTitle(sub.title, sub.type),
     };
     const updated = [listing, ...dealer];
     setDealer(updated);
@@ -734,6 +753,54 @@ export default function Admin() {
                   </tbody>
                 </table>
               </div>
+            </div>
+
+            {/* Booking Inquiries Section */}
+            <div className="mt-10">
+              <h2 className="text-xl font-display font-bold uppercase tracking-tight mb-4 text-foreground">
+                Booking Inquiries (Keep Me Updated requests)
+              </h2>
+              {bookingInquiries.length === 0 ? (
+                <div className="rounded-lg border border-dashed border-border bg-card p-8 text-center text-muted-foreground text-sm">
+                  No booking inquiries received yet.
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[760px] text-sm">
+                      <thead>
+                        <tr className="border-b border-border bg-secondary text-left">
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Date</th>
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Name</th>
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Phone</th>
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">City</th>
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Interested In</th>
+                          <th className="px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bookingInquiries.map((inq) => (
+                          <tr key={inq.id} className="border-b border-border last:border-0">
+                            <td className="px-4 py-3 text-muted-foreground text-xs">{inq.date}</td>
+                            <td className="px-4 py-3 font-semibold">{inq.name}</td>
+                            <td className="px-4 py-3 font-semibold text-primary">{inq.phone}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{inq.city}</td>
+                            <td className="px-4 py-3 font-semibold capitalize">{inq.interest}s</td>
+                            <td className="px-4 py-3 text-right">
+                              <button
+                                onClick={() => removeInquiry(inq.id)}
+                                className="rounded px-2.5 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/5 cursor-pointer"
+                              >
+                                Resolve / Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

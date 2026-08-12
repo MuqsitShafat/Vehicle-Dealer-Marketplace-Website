@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { IMAGES, CITIES, PRICE_RANGES, BRANDS } from "@/lib/data";
+import { IMAGES, CITIES, PRICE_RANGES, BRANDS, DYNAMIC_PRICE_RANGES } from "@/lib/data";
 
 const TYPES = ["Car", "Bike", "Tractor"];
 
@@ -33,7 +33,13 @@ export default function HeroSearch() {
       ? BRANDS[type]
       : [...BRANDS.Car, ...BRANDS.Bike, ...BRANDS.Tractor];
 
-  // Auto-reset brand if selected brand is not valid for new type selection
+  // Dynamic price ranges based on selected category type
+  const availablePriceRanges =
+    type && type !== "any"
+      ? DYNAMIC_PRICE_RANGES[type]
+      : DYNAMIC_PRICE_RANGES.any;
+
+  // Auto-reset brand & price if type changes
   useEffect(() => {
     if (
       type &&
@@ -43,6 +49,7 @@ export default function HeroSearch() {
     ) {
       setBrand("any");
     }
+    setPrice("any");
   }, [type]);
 
   useEffect(() => {
@@ -156,7 +163,7 @@ export default function HeroSearch() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Any price</SelectItem>
-                  {PRICE_RANGES.map(p => (
+                  {availablePriceRanges.map(p => (
                     <SelectItem key={p} value={p}>
                       {p}
                     </SelectItem>
@@ -197,7 +204,7 @@ export default function HeroSearch() {
           <span className="hidden sm:inline">•</span>
           <span>Genuine spare parts</span>
           <span className="hidden sm:inline">•</span>
-          <span>Trusted since 2005</span>
+          <span>Trusted since 1996</span>
         </p>
       </div>
     </section>

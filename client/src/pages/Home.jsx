@@ -31,7 +31,13 @@ import {
   InstagramIcon,
   FacebookIcon,
 } from "@/components/SocialIcons";
-import { getCurrentListings, CATEGORIES, SPARE_PARTS, CONTACT, IMAGES } from "@/lib/data";
+import {
+  getCurrentListings,
+  CATEGORIES,
+  SPARE_PARTS,
+  CONTACT,
+  IMAGES,
+} from "@/lib/data";
 import rev1 from "@/assets/images/Reviews/1.jpeg";
 import rev2 from "@/assets/images/Reviews/2.jpeg";
 import rev3 from "@/assets/images/Reviews/3.jpeg";
@@ -45,38 +51,38 @@ const REVIEW_DATA = [
   {
     name: "Sheikh Muhammad Ali",
     text: "Extremely satisfied with my buying experience. The team was highly professional and the vehicle was clean as promised!",
-    rating: 5
+    rating: 5,
   },
   {
     name: "Chaudhary Nabeel",
     text: "Honest dealings, clear paperwork, and outstanding post-purchase support. Waseem Motors is highly trusted.",
-    rating: 5
+    rating: 5,
   },
   {
     name: "Sheikh Yasir Awan",
     text: "Got a Massey Ferguson tractor in pristine condition at a very fair price. Excellent client service!",
-    rating: 5
+    rating: 5,
   },
   {
     name: "Chaudhary Abdul Rehman",
     text: "Superb customer service! The staff is very cooperative and guided me throughout the registration process.",
-    rating: 5
+    rating: 5,
   },
   {
     name: "Sheikh Hammad",
     text: "Bought my Honda CG 125 from Waseem Honda. The service was top notch and transaction was seamless.",
-    rating: 5
+    rating: 5,
   },
   {
     name: "Chaudhary Kamran",
     text: "Transparency and trust define Waseem Motors. Fully satisfied with their fair deals. Will buy again!",
-    rating: 5
-  }
+    rating: 5,
+  },
 ];
 
 const CUSTOMER_REVIEWS = REVIEWS.map((img, i) => ({
   img,
-  ...REVIEW_DATA[i % REVIEW_DATA.length]
+  ...REVIEW_DATA[i % REVIEW_DATA.length],
 }));
 
 const FOOTER_LINKS = [
@@ -201,7 +207,8 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {listings.filter(l => l.status === "Live" && l.source === "dealer")
+            {listings
+              .filter(l => l.status === "Live" && l.source === "dealer")
               .slice(0, 6)
               .map((item, i) => (
                 <div
@@ -304,7 +311,7 @@ export default function Home() {
               alt="Dealer forecourt"
               className="h-72 w-full object-cover lg:h-96"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#e63946]/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#e63946]/40 to-transparent" />
             <p className="absolute bottom-4 left-4 text-sm font-bold text-white">
               {listings.length}+ vehicles sold through Waseem
             </p>
@@ -470,7 +477,7 @@ export default function Home() {
               rel="noreferrer"
               className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
             >
-              <MessageCircle className="h-5 w-5 text-[#25D366]" />
+              <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                   WhatsApp Support

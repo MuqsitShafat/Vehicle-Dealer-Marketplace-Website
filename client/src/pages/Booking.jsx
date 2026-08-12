@@ -12,6 +12,7 @@ export default function Booking() {
   const [listings] = useState(() => getCurrentListings());
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [interest, setInterest] = useState("Car");
   const [submitted, setSubmitted] = useState(false);
 
@@ -19,10 +20,31 @@ export default function Booking() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) {
-      toast.error("Please fill in your name and phone number.");
+    if (!name.trim() || !phone.trim() || !city.trim()) {
+      toast.error("Please fill in your name, phone, and city.");
       return;
     }
+    const normalized = city.toLowerCase().trim();
+    if (normalized !== "bhakkar" && normalized !== "bhakar") {
+      toast.error("Online vehicle booking is restricted to Bhakkar city users only.");
+      return;
+    }
+
+    try {
+      const existing = JSON.parse(localStorage.getItem("waseem_booking_inquiries") || "[]");
+      const newInquiry = {
+        id: Date.now(),
+        name: name.trim(),
+        phone: phone.trim(),
+        city: city.trim(),
+        interest: interest,
+        date: new Date().toLocaleString(),
+      };
+      localStorage.setItem("waseem_booking_inquiries", JSON.stringify([newInquiry, ...existing]));
+    } catch (err) {
+      console.error("Error saving booking inquiry:", err);
+    }
+
     setSubmitted(true);
     toast.success("Inquiry received! We will contact you soon.");
   };
@@ -102,16 +124,22 @@ export default function Booking() {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
                   WhatsApp Support
                 </p>
                 <a
                   href="https://wa.me/923332834567?text=Hi%20Waseem%20Motors,%20I%20want%20to%20book%20a%20vehicle."
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 text-xs font-semibold text-[#25D366] hover:underline"
+                  className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md max-w-sm"
                 >
-                  <WhatsAppIcon className="h-4 w-4" /> Muhammad Waseem Awan: 0333-2834567
+                  <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                      Muhammad Waseem Awan
+                    </p>
+                    <p className="text-sm font-semibold text-foreground">0333-2834567</p>
+                  </div>
                 </a>
               </div>
             </div>
@@ -155,6 +183,14 @@ export default function Booking() {
                     placeholder="Phone Number"
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-ring/40"
                   />
+                  <input
+                    type="text"
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Your City (Bhakkar Only)"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-ring/40"
+                  />
                   <select
                     value={interest}
                     onChange={(e) => setInterest(e.target.value)}
@@ -166,7 +202,7 @@ export default function Booking() {
                   </select>
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-primary py-2 text-xs font-bold text-primary-foreground hover:shadow"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-primary py-2 text-xs font-bold text-primary-foreground hover:shadow cursor-pointer"
                   >
                     Keep Me Updated <ArrowRight className="h-3.5 w-3.5" />
                   </button>

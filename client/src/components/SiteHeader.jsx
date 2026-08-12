@@ -23,6 +23,12 @@ const NAV = [
 
 export default function SiteHeader() {
   const [location] = useLocation();
+  const suffix =
+    location === "/bikes"
+      ? "Bikes"
+      : location === "/tractors"
+        ? "Tractors"
+        : "Motors";
   const [open, setOpen] = useState(false);
   const headerRef = useRef(null);
 
@@ -63,15 +69,15 @@ export default function SiteHeader() {
       <div className="container flex h-20 items-center justify-between gap-4">
         <Link href="/" className="logo-animate flex items-center gap-2.5">
           <img
-            src={IMAGES.logo}
+            src={location === "/bikes" ? IMAGES.bikesLogo : IMAGES.logo}
             alt="Waseem logo"
-            className="h-11 w-11 rounded-sm object-contain bg-white/95 p-0.5"
+            className="h-15 w-15 object-contain p-0.5"
           />
           <span className="text-[28px] font-display font-bold uppercase leading-none tracking-wide text-primary-foreground">
             Waseem
           </span>
           <span className="mt-3.5 hidden text-[12px] font-bold uppercase tracking-[0.18em] text-[oklch(0.72_0.17_55)] sm:block tracking-tight">
-            Motors
+            {suffix}
           </span>
         </Link>
 

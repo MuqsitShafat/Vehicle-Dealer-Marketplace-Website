@@ -5,17 +5,25 @@
 import React, { useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import { getCurrentSpareParts, IMAGES } from "@/lib/data";
-import { Wrench, Car } from "lucide-react";
+import { Wrench, Car, Search } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 
 export default function SpareParts() {
   useReveal();
   const [parts] = useState(() => getCurrentSpareParts());
+  const [searchQuery, setSearchQuery] = useState("");
 
   const wa = (name, price) =>
     `https://wa.me/923332834567?text=${encodeURIComponent(
       `Hi Waseem, I'm interested in: ${name} (${price})`
     )}`;
+
+  const filteredParts = parts.filter((part) => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
+    return part.name.toLowerCase().includes(q) ||
+           part.compatible.some(c => c.toLowerCase().includes(q));
+  });
 
   return (
     <div className="min-h-screen">
@@ -41,15 +49,27 @@ export default function SpareParts() {
       </div>
 
       <div className="container py-10">
-        <p className="text-sm font-semibold text-muted-foreground">
-          {parts.length} parts in the parts counter
-        </p>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {parts.map((part, i) => (
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <p className="text-sm font-semibold text-muted-foreground">
+            {filteredParts.length} {filteredParts.length === 1 ? "part" : "parts"} in the parts counter
+          </p>
+          <div className="w-full sm:w-80 relative">
+            <input
+              type="text"
+              placeholder="Search parts (e.g. light, brake)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-md border border-input bg-background pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+            />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredParts.map((part) => (
             <div
               key={part.id}
-              className="reveal flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
-              style={{ transitionDelay: `${i * 50}ms` }}
+              className="flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
             >
               <div className="aspect-[4/3] overflow-hidden bg-secondary">
                 <img

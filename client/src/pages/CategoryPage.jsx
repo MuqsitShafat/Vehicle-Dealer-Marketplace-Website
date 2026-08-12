@@ -4,7 +4,6 @@
  * Brand filter dropdown keeps it simple and clear.
  */
 import { useMemo, useState, useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
 import { getCurrentListings, BRANDS, CATEGORIES } from "@/lib/data";
@@ -51,12 +50,8 @@ export default function CategoryPage({ category }) {
           <h1 className="text-4xl font-display font-bold uppercase tracking-tight md:text-5xl">
             {category === "Car" ? "Cars" : category + "s"}
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-white/80">
-            {meta?.tagline}. Browse what's in stock, or{" "}
-            <a href="/sell" className="font-bold text-white/90 underline">
-              list your own
-            </a>
-            .
+          <p className="mt-2 max-w-xl text-sm text-white/80 font-medium">
+            {meta?.tagline}. Browse what's in stock at Waseem Motors.
           </p>
         </div>
       </div>
@@ -70,19 +65,18 @@ export default function CategoryPage({ category }) {
             <label className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               Filter by brand
             </label>
-            <Select value={brand} onValueChange={setBrand}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Any brand" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any brand</SelectItem>
-                {BRANDS[category].map((b) => (
-                  <SelectItem key={b} value={b}>
-                    {b}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              className="w-48 rounded-md border border-input bg-background px-3 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-ring/40 cursor-pointer text-foreground"
+            >
+              <option value="any">Any brand</option>
+              {BRANDS[category].map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -99,8 +93,8 @@ export default function CategoryPage({ category }) {
           </div>
         ) : (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item, i) => (
-              <div key={item.id} className="reveal" style={{ transitionDelay: `${i * 50}ms` }}>
+            {items.map((item) => (
+              <div key={item.id}>
                 <ListingCard item={item} />
               </div>
             ))}

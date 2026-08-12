@@ -1,4 +1,4 @@
-import heroBg from "../assets/images/hero_background_image.jpeg";
+import heroBg from "../assets/images/hero_background_image1.png";
 import altisImg from "../assets/images/Cars/Altis.jpeg";
 import altisFrontImg from "../assets/images/Cars/Altis_front_pic.jpeg";
 import carsGridImg from "../assets/images/Cars/Cars_Main_Grid.jpeg";
@@ -20,9 +20,10 @@ import cd70Pic2Img from "../assets/images/Bikes/Honda_CD70_pic2.png";
 
 import masseyImg from "../assets/images/Tractors/Massey_Ferguson_tractor.jpg";
 import tractorsGridImg from "../assets/images/Tractors/Tractors_Main_Grid.jpg";
-import givingImage from "../assets/images/giving_image.jpeg";
+import givingImage from "../assets/images/giving_image1.jpeg";
 import sparePartsMainImg from "../assets/images/spare_parts_main_image.jpeg";
-import logoImg from "../assets/images/logo.png";
+import logoImg from "../assets/images/logo_white.png";
+import bikesLogoImg from "../assets/images/Waseem_bikes_logo.png";
 import cd70Tank from "../assets/images/SpareParts/HondaTank_CD70.jpeg";
 import cd70BackLight from "../assets/images/SpareParts/Honda_CD70_BackLight.jpeg";
 import cd70BreakLeather from "../assets/images/SpareParts/Honda_CD70_BreakLeather.jpeg";
@@ -31,6 +32,7 @@ import cd70Headlight from "../assets/images/SpareParts/Honda_CD70_headlight.jpeg
 export const IMAGES = {
   hero: heroBg,
   logo: logoImg,
+  bikesLogo: bikesLogoImg,
   sedan: altisImg,
   suv: havalImg,
   hatch: swiftImg,
@@ -346,7 +348,17 @@ export const CITIES = [
 ];
 
 export const BRANDS = {
-  Car: ["Toyota", "Suzuki", "Hyundai"],
+  Car: [
+    "Suzuki",
+    "Toyota",
+    "Honda",
+    "Changan",
+    "Kia",
+    "Hyundai",
+    "Haval",
+    "MG",
+    "BYD",
+  ],
   Bike: ["Honda"],
   Tractor: ["Massey Ferguson", "Fiat", "New Holland", "Millat", "Al-Ghazi"],
 };
@@ -368,13 +380,39 @@ export const YEAR_OPTIONS = [
   "Before 2010",
 ];
 
-export const PRICE_RANGES = [
-  "Under Rs 20 Lac",
-  "Rs 20 – 40 Lac",
-  "Rs 40 – 70 Lac",
-  "Rs 70 Lac – 1.5 Cr",
-  "Above Rs 1.5 Cr",
-];
+export const DYNAMIC_PRICE_RANGES = {
+  Car: [
+    "Under Rs 15 Lac",
+    "Rs 15 – 35 Lac",
+    "Rs 35 – 70 Lac",
+    "Rs 70 Lac – 1.5 Cr",
+    "Rs 1.5 – 5 Cr",
+    "Above Rs 5 Cr",
+  ],
+  Bike: [
+    "Under Rs 1.5 Lac",
+    "Rs 1.5 – 3 Lac",
+    "Rs 3 – 5 Lac",
+    "Rs 5 – 8 Lac",
+    "Above Rs 8 Lac",
+  ],
+  Tractor: [
+    "Under Rs 25 Lac",
+    "Rs 25 – 45 Lac",
+    "Rs 45 – 80 Lac",
+    "Rs 80 Lac – 1.5 Cr",
+    "Above Rs 1.5 Cr",
+  ],
+  any: [
+    "Under Rs 10 Lac",
+    "Rs 10 – 30 Lac",
+    "Rs 30 – 70 Lac",
+    "Rs 70 Lac – 1.5 Cr",
+    "Above Rs 1.5 Cr",
+  ],
+};
+
+export const PRICE_RANGES = DYNAMIC_PRICE_RANGES.any;
 
 export const CATEGORIES = [
   {
@@ -402,7 +440,7 @@ export const CONTACT = {
   phone: "03332834567",
   whatsapp: "03332834567",
   address: "Darya Khan Road, Bhakkar, Punjab, Pakistan",
-  hours: "Mon – Sat: 9:00 AM – 8:00 PM",
+  hours: "Sat – Thu: 9:00 AM – 8:00 PM (Friday Off)",
   emails: ["waseemmotors77@gmail.com", "waseemhondabhakkar@gmail.com"],
   phones: [
     { name: "Muhammad Akash Awan", number: "03121537773" },
@@ -416,6 +454,27 @@ export const CONTACT = {
   },
 };
 
+export function getBrandFromTitle(title, category) {
+  if (!title) return "Other";
+  const t = title.toLowerCase();
+  const brands = BRANDS[category] || [];
+  for (const b of brands) {
+    if (t.includes(b.toLowerCase())) {
+      return b;
+    }
+  }
+  if (t.includes("toyota")) return "Toyota";
+  if (t.includes("suzuki")) return "Suzuki";
+  if (t.includes("hyundai")) return "Hyundai";
+  if (t.includes("honda")) return "Honda";
+  if (t.includes("massey") || t.includes("ferguson")) return "Massey Ferguson";
+  if (t.includes("fiat")) return "Fiat";
+  if (t.includes("holland")) return "New Holland";
+  if (t.includes("millat")) return "Millat";
+  if (t.includes("ghazi")) return "Al-Ghazi";
+  return "Other";
+}
+
 export function getCurrentListings() {
   if (typeof window === "undefined") return LISTINGS;
   try {
@@ -424,8 +483,10 @@ export function getCurrentListings() {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Restore dynamic imports for static listings so they don't break on new builds
-        return parsed.map((item) => {
-          const staticItem = LISTINGS.find((l) => l.id === item.id);
+        return parsed.map(item => {
+          const staticItem = LISTINGS.find(l => l.id === item.id);
+          const detectedBrand =
+            item.brand || getBrandFromTitle(item.title, item.category || "Car");
           if (staticItem) {
             return {
               ...item,
@@ -433,11 +494,13 @@ export function getCurrentListings() {
               images: staticItem.images,
               source: item.source || "dealer",
               bookingEnabled: item.bookingEnabled || false,
+              brand: detectedBrand,
             };
           }
           return {
             ...item,
             bookingEnabled: item.bookingEnabled || false,
+            brand: detectedBrand,
           };
         });
       }
@@ -447,7 +510,12 @@ export function getCurrentListings() {
   }
 
   // Seed default listings
-  const seeded = LISTINGS.map(item => ({ ...item, source: "dealer", bookingEnabled: false }));
+  const seeded = LISTINGS.map(item => ({
+    ...item,
+    source: "dealer",
+    bookingEnabled: false,
+    brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
+  }));
   try {
     localStorage.setItem("waseem_dealer_listings", JSON.stringify(seeded));
   } catch (e) {
@@ -463,8 +531,8 @@ export function getCurrentSpareParts() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map((item) => {
-          const staticItem = SPARE_PARTS.find((p) => p.id === item.id);
+        return parsed.map(item => {
+          const staticItem = SPARE_PARTS.find(p => p.id === item.id);
           if (staticItem) {
             return {
               ...item,

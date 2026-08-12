@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
-import { getCurrentListings, PRICE_RANGES, CITIES, BRANDS, CATEGORIES } from "@/lib/data";
+import { getCurrentListings, PRICE_RANGES, CITIES, BRANDS, CATEGORIES, DYNAMIC_PRICE_RANGES } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 
 export default function SearchPage() {
@@ -30,16 +30,37 @@ export default function SearchPage() {
       if (price !== "any") {
         const matches = (bound) =>
           l.priceRaw >= bound[0] && l.priceRaw <= bound[1];
-        if (price === "Under Rs 20 Lac" && !matches([0, 2000000])) return false;
-        if (price === "Rs 20 – 40 Lac" && !matches([2000000, 4000000])) return false;
-        if (price === "Rs 40 – 70 Lac" && !matches([4000000, 7000000])) return false;
-        if (price === "Rs 70 Lac – 1.5 Cr" && !matches([7000000, 15000000]))
-          return false;
-        if (price === "Above Rs 1.5 Cr" && l.priceRaw <= 15000000) return false;
+
+        // Car price ranges
+        if (price === "Under Rs 15 Lac") return matches([0, 1500000]);
+        if (price === "Rs 15 – 35 Lac") return matches([1500000, 3500000]);
+        if (price === "Rs 35 – 70 Lac") return matches([3500000, 7000000]);
+        if (price === "Rs 70 Lac – 1.5 Cr") return matches([7000000, 15000000]);
+        if (price === "Rs 1.5 – 5 Cr") return matches([15000000, 50000000]);
+        if (price === "Above Rs 5 Cr") return l.priceRaw > 50000000;
+
+        // Bike price ranges
+        if (price === "Under Rs 1.5 Lac") return matches([0, 150000]);
+        if (price === "Rs 1.5 – 3 Lac") return matches([150000, 300000]);
+        if (price === "Rs 3 – 5 Lac") return matches([300000, 500000]);
+        if (price === "Rs 5 – 8 Lac") return matches([500000, 800000]);
+        if (price === "Above Rs 8 Lac") return l.priceRaw > 800000;
+
+        // Tractor price ranges
+        if (price === "Under Rs 25 Lac") return matches([0, 2500000]);
+        if (price === "Rs 25 – 45 Lac") return matches([2500000, 4500000]);
+        if (price === "Rs 45 – 80 Lac") return matches([4500000, 8000000]);
+        if (price === "Rs 80 Lac – 1.5 Cr") return matches([8000000, 15000000]);
+        if (price === "Above Rs 1.5 Cr") return l.priceRaw > 15000000;
+
+        // Default fallback ranges (when type is "any")
+        if (price === "Under Rs 10 Lac") return matches([0, 1000000]);
+        if (price === "Rs 10 – 30 Lac") return matches([1000000, 3000000]);
+        if (price === "Rs 30 – 70 Lac") return matches([3000000, 7000000]);
       }
       return true;
     });
-  }, [type, brand, price, location]);
+  }, [type, brand, price, location, listings]);
 
   const set = (key, value) => {
     const next = new URLSearchParams(params);
@@ -100,12 +121,20 @@ export default function SearchPage() {
       </div>
 
       <div className="container py-8">
-        <div className="grid gap-3 rounded-lg border border-border bg-card p-3 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
-          {select("Type", type, ["Car", "Bike", "Tractor"], "type")}
-          {select("Brand", brand, Array.from(new Set(allBrands)), "brand")}
-          {select("Price range", price, PRICE_RANGES, "price")}
-          {select("Location", location, CITIES, "location")}
-        </div>
+        {(() => {
+          const availablePriceRanges =
+            type && type !== "any"
+              ? DYNAMIC_PRICE_RANGES[type]
+              : DYNAMIC_PRICE_RANGES.any;
+          return (
+            <div className="grid gap-3 rounded-lg border border-border bg-card p-3 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
+              {select("Type", type, ["Car", "Bike", "Tractor"], "type")}
+              {select("Brand", brand, Array.from(new Set(allBrands)), "brand")}
+              {select("Price range", price, availablePriceRanges, "price")}
+              {select("Location", location, CITIES, "location")}
+            </div>
+          );
+        })()}
 
         <p className="mt-6 text-sm font-semibold text-muted-foreground">
           {results.length} {results.length === 1 ? "vehicle" : "vehicles"} match
@@ -125,8 +154,8 @@ export default function SearchPage() {
           </div>
         ) : (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((item, i) => (
-              <div key={item.id} className="reveal" style={{ transitionDelay: `${i * 50}ms` }}>
+            {results.map((item) => (
+              <div key={item.id}>
                 <ListingCard item={item} />
               </div>
             ))}
