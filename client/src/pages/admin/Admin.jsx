@@ -20,32 +20,36 @@ import {
 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import { useReveal } from "@/hooks/useReveal";
-import { getCurrentListings, getCurrentSpareParts, getBrandFromTitle, IMAGES } from "@/lib/data";
+import { getCurrentListings, getCurrentSpareParts, getBrandFromTitle, IMAGES, formatPrice } from "@/lib/data";
+import { supabase } from "@/lib/supabase";
 
-function saveDealerListings(listings) {
-  localStorage.setItem("waseem_dealer_listings", JSON.stringify(listings));
-}
+async function uploadImageToSupabase(file, bucketName) {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(fileName, file);
 
-function formatPrice(amount) {
-  const num = Number(amount) || 0;
-  if (num < 100000) {
-    return `Rs ${num.toLocaleString()}`;
-  } else if (num < 10000000) {
-    const lacs = num / 100000;
-    const formatted =
-      lacs % 1 === 0 ? lacs : lacs.toFixed(2).replace(/\.?0+$/, "");
-    return `Rs ${formatted} Lac`;
-  } else {
-    const crores = num / 10000000;
-    const formatted =
-      crores % 1 === 0 ? crores : crores.toFixed(2).replace(/\.?0+$/, "");
-    return `Rs ${formatted} Cr`;
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
   }
 }
 
+
+
 export default function Admin() {
   useReveal();
-  const [dealer, setDealer] = useState(() => getCurrentListings());
+  const [dealer, setDealer] = useState([]);
   const [publicSubs, setPublicSubs] = useState([]);
   const [tab, setTab] = useState("manage");
 
@@ -56,15 +60,17 @@ export default function Admin() {
   const [price, setPrice] = useState("");
   const [city, setCity] = useState("");
   const [uploadedPhotos, setUploadedPhotos] = useState([]);
+  const [photoFiles, setPhotoFiles] = useState([]);
   const [bookingEnabled, setBookingEnabled] = useState(false);
 
-  const [parts, setParts] = useState(() => getCurrentSpareParts());
+  const [parts, setParts] = useState([]);
 
   // New spare part form states
   const [partName, setPartName] = useState("");
   const [partPrice, setPartPrice] = useState("");
   const [partCompatible, setPartCompatible] = useState("");
   const [partPhoto, setPartPhoto] = useState("");
+  const [partPhotoFile, setPartPhotoFile] = useState(null);
 
   // Editing states for Listings
   const [editingListing, setEditingListing] = useState(null);
@@ -74,6 +80,7 @@ export default function Admin() {
   const [editPrice, setEditPrice] = useState("");
   const [editCity, setEditCity] = useState("");
   const [editPhotos, setEditPhotos] = useState([]);
+  const [editPhotoFiles, setEditPhotoFiles] = useState([]);
   const [editBookingEnabled, setEditBookingEnabled] = useState(false);
 
   // Editing states for Parts
@@ -82,6 +89,87 @@ export default function Admin() {
   const [editPartPrice, setEditPartPrice] = useState("");
   const [editPartCompatible, setEditPartCompatible] = useState("");
   const [editPartPhoto, setEditPartPhoto] = useState("");
+  const [editPartPhotoFile, setEditPartPhotoFile] = useState(null);
+
+  const [bookingInquiries, setBookingInquiries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    try {
+      const { data: dbListings, error: listingsErr } = await supabase
+        .from("listings")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (listingsErr) throw listingsErr;
+
+      const mappedListings = (dbListings || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        brand: item.brand,
+        year: item.year,
+        price: item.price,
+        priceRaw: Number(item.price_raw),
+        km: item.km,
+        city: item.city,
+        fuel: item.fuel,
+        transmission: item.transmission,
+        verified: item.verified,
+        status: item.status,
+        source: item.source,
+        bookingEnabled: item.booking_enabled,
+        img: item.img,
+        images: item.images || [],
+      }));
+
+      setDealer(mappedListings.filter(l => l.source === "dealer" || (l.source === "public" && l.status !== "Pending")));
+      setPublicSubs(mappedListings.filter(l => l.source === "public" && l.status === "Pending"));
+
+      const { data: dbParts, error: partsErr } = await supabase
+        .from("spare_parts")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (partsErr) throw partsErr;
+
+      setParts((dbParts || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        priceRaw: Number(item.price_raw),
+        compatible: item.compatible || [],
+        img: item.img,
+      })));
+
+      const { data: dbInquiries, error: inquiriesErr } = await supabase
+        .from("booking_inquiries")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (inquiriesErr) throw inquiriesErr;
+
+      setBookingInquiries((dbInquiries || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        phone: item.phone,
+        city: item.city,
+        interest: item.interest,
+        date: new Date(item.created_at).toLocaleString(),
+      })));
+
+    } catch (err) {
+      console.error("Error loading admin data:", err);
+      toast.error("Failed to load live database data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [tab]);
 
   const startEditingListing = (item) => {
     setEditingListing(item);
@@ -92,42 +180,70 @@ export default function Admin() {
     setEditCity(item.city);
     setEditPhotos(item.images || [item.img]);
     setEditBookingEnabled(!!item.bookingEnabled);
+    setEditPhotoFiles([]);
   };
 
-  const saveEditedListing = (e) => {
+  const saveEditedListing = async (e) => {
     e.preventDefault();
     if (!editTitle.trim() || !editPrice.trim() || !editYear.trim() || !editCity.trim()) {
       toast.error("Please fill in all listing fields.");
       return;
     }
-    const updated = dealer.map((l) => {
-      if (l.id === editingListing.id) {
-        return {
-          ...l,
-          title: editTitle,
-          category: editCategory,
-          year: Number(editYear),
-          priceRaw: Number(editPrice) || 0,
-          price: formatPrice(editPrice),
-          city: editCity,
-          img: editPhotos[0] || l.img,
-          images: editPhotos,
-          bookingEnabled: editBookingEnabled,
-          brand: getBrandFromTitle(editTitle, editCategory),
-        };
+
+    toast.loading("Saving changes...");
+
+    try {
+      let finalImages = editPhotos;
+      if (editPhotoFiles.length > 0) {
+        const uploadedUrls = [];
+        for (const file of editPhotoFiles) {
+          const url = await uploadImageToSupabase(file, "listings");
+          if (url) uploadedUrls.push(url);
+        }
+        if (uploadedUrls.length > 0) {
+          finalImages = uploadedUrls;
+        }
       }
-      return l;
-    });
-    setDealer(updated);
-    saveDealerListings(updated);
-    setEditingListing(null);
-    toast.success(`Listing "${editTitle}" updated successfully.`);
+
+      const mainImg = finalImages[0] || editingListing.img;
+
+      const { error } = await supabase
+        .from("listings")
+        .update({
+          title: editTitle.trim(),
+          category: editCategory,
+          brand: getBrandFromTitle(editTitle, editCategory),
+          year: Number(editYear),
+          price_raw: Number(editPrice) || 0,
+          price: formatPrice(editPrice),
+          city: editCity.trim(),
+          img: mainImg,
+          images: finalImages,
+          booking_enabled: editBookingEnabled
+        })
+        .eq("id", editingListing.id);
+
+      if (error) throw error;
+
+      toast.dismiss();
+      toast.success(`Listing "${editTitle}" updated successfully.`);
+      setEditingListing(null);
+      setEditPhotoFiles([]);
+      loadData();
+    } catch (err) {
+      toast.dismiss();
+      console.error("Error updating listing:", err);
+      toast.error("Failed to save changes.");
+    }
   };
 
   const handleEditPhotosChange = (e) => {
     const files = e.target.files;
     if (!files) return;
-    const promises = Array.from(files).map((file) => {
+    const filesArray = Array.from(files);
+    setEditPhotoFiles(filesArray);
+
+    const promises = filesArray.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -147,34 +263,54 @@ export default function Admin() {
     setEditPartPrice(part.price.replace(/[^\d]/g, ""));
     setEditPartCompatible(part.compatible.join(", "));
     setEditPartPhoto(part.img);
+    setEditPartPhotoFile(null);
   };
 
-  const saveEditedPart = (e) => {
+  const saveEditedPart = async (e) => {
     e.preventDefault();
     if (!editPartName.trim() || !editPartPrice.trim() || !editPartCompatible.trim()) {
       toast.error("Please fill in all spare part fields.");
       return;
     }
-    const updated = parts.map((p) => {
-      if (p.id === editingPart.id) {
-        return {
-          ...p,
-          name: editPartName,
-          price: editPartPrice.startsWith("Rs") ? editPartPrice : `Rs ${Number(editPartPrice).toLocaleString()}`,
-          compatible: editPartCompatible.split(",").map(s => s.trim()).filter(Boolean),
-          img: editPartPhoto || p.img,
-        };
+
+    toast.loading("Saving spare part changes...");
+
+    try {
+      let finalImg = editPartPhoto || editingPart.img;
+      if (editPartPhotoFile) {
+        const url = await uploadImageToSupabase(editPartPhotoFile, "parts");
+        if (url) finalImg = url;
       }
-      return p;
-    });
-    saveSpareParts(updated);
-    setEditingPart(null);
-    toast.success(`Spare part "${editPartName}" updated successfully.`);
+
+      const { error } = await supabase
+        .from("spare_parts")
+        .update({
+          name: editPartName.trim(),
+          price: editPartPrice.startsWith("Rs") ? editPartPrice : `Rs ${Number(editPartPrice).toLocaleString()}`,
+          price_raw: Number(editPartPrice) || 0,
+          compatible: editPartCompatible.split(",").map(s => s.trim()).filter(Boolean),
+          img: finalImg
+        })
+        .eq("id", editingPart.id);
+
+      if (error) throw error;
+
+      toast.dismiss();
+      toast.success(`Spare part "${editPartName}" updated successfully.`);
+      setEditingPart(null);
+      setEditPartPhotoFile(null);
+      loadData();
+    } catch (err) {
+      toast.dismiss();
+      console.error("Error saving spare part:", err);
+      toast.error("Failed to save spare part.");
+    }
   };
 
   const handleEditPartPhotoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setEditPartPhotoFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setEditPartPhoto(reader.result);
@@ -182,30 +318,19 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
-  const [bookingInquiries, setBookingInquiries] = useState([]);
-
-  useEffect(() => {
+  const removeInquiry = async (id) => {
     try {
-      setPublicSubs(
-        JSON.parse(localStorage.getItem("waseem_submissions") || "[]")
-      );
-    } catch {
-      setPublicSubs([]);
+      const { error } = await supabase
+        .from("booking_inquiries")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      toast.success("Inquiry resolved and removed.");
+      loadData();
+    } catch (err) {
+      console.error("Error removing inquiry:", err);
+      toast.error("Failed to remove inquiry.");
     }
-    try {
-      setBookingInquiries(
-        JSON.parse(localStorage.getItem("waseem_booking_inquiries") || "[]")
-      );
-    } catch {
-      setBookingInquiries([]);
-    }
-  }, [tab]);
-
-  const removeInquiry = (id) => {
-    const updated = bookingInquiries.filter(i => i.id !== id);
-    setBookingInquiries(updated);
-    localStorage.setItem("waseem_booking_inquiries", JSON.stringify(updated));
-    toast.success("Inquiry removed.");
   };
 
   const live = dealer.filter(l => l.status === "Live").length;
@@ -214,7 +339,10 @@ export default function Admin() {
   const handlePhotosChange = e => {
     const files = e.target.files;
     if (!files) return;
-    const promises = Array.from(files).map(file => {
+    const filesArray = Array.from(files);
+    setPhotoFiles(p => [...p, ...filesArray].slice(0, 4));
+
+    const promises = filesArray.map(file => {
       return new Promise(resolve => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -230,11 +358,13 @@ export default function Admin() {
 
   const removePhoto = idx => {
     setUploadedPhotos(prev => prev.filter((_, i) => i !== idx));
+    setPhotoFiles(prev => prev.filter((_, i) => i !== idx));
   };
 
   const handlePartPhotoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setPartPhotoFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setPartPhoto(reader.result);
@@ -242,167 +372,221 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
-  const addListing = e => {
+  const addListing = async (e) => {
     e.preventDefault();
     if (!title.trim() || !price.trim() || !year.trim() || !city.trim()) {
       toast.error("Please fill in every field before adding the listing.");
       return;
     }
-    const next = {
-      id: Date.now(),
-      title,
-      category,
-      year: Number(year),
-      priceRaw: Number(price) || 0,
-      price: formatPrice(price),
-      km: "New listing",
-      city,
-      fuel: category === "Tractor" ? "Diesel" : "Petrol",
-      transmission: category === "Tractor" ? "Manual" : "Automatic",
-      verified: true,
-      status: "Live",
-      source: "dealer", // Dealer stock goes to category pages (Cars, Bikes, Tractors)
-      img:
-        uploadedPhotos[0] ||
-        (category === "Bike"
-          ? IMAGES.bike2
+
+    toast.loading("Uploading photos and adding listing...");
+
+    try {
+      const uploadedUrls = [];
+      for (const file of photoFiles) {
+        const url = await uploadImageToSupabase(file, "listings");
+        if (url) {
+          uploadedUrls.push(url);
+        }
+      }
+
+      const mainImg = uploadedUrls[0] || (
+        category === "Bike"
+          ? "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80"
           : category === "Tractor"
-            ? IMAGES.tractor1
-            : IMAGES.sedan),
-      images:
-        uploadedPhotos.length > 0
-          ? uploadedPhotos
-          : [
-              category === "Bike"
-                ? IMAGES.bike2
-                : category === "Tractor"
-                  ? IMAGES.tractor1
-                  : IMAGES.sedan,
-            ],
-      days: "Just now",
-      bookingEnabled: bookingEnabled,
-      brand: getBrandFromTitle(title, category),
-    };
-    const updated = [next, ...dealer];
-    setDealer(updated);
-    saveDealerListings(updated);
-    setTitle("");
-    setYear("");
-    setPrice("");
-    setCity("");
-    setUploadedPhotos([]);
-    setBookingEnabled(false);
-    setTab("manage");
-    toast.success(`"${next.title}" is now live.`);
-  };
+            ? "https://images.unsplash.com/photo-1599930995924-f7b2c019ff56?auto=format&fit=crop&w=800&q=80"
+            : "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80"
+      );
 
-  const setStatus = (id, status) => {
-    const updated = dealer.map(l => (l.id === id ? { ...l, status } : l));
-    setDealer(updated);
-    saveDealerListings(updated);
-    toast.success(
-      status === "Sold"
-        ? "Marked as Sold."
-        : status === "Live"
-          ? "Listing restored to Live."
-          : "Listing removed."
-    );
-  };
+      const { error } = await supabase
+        .from("listings")
+        .insert([{
+          title: title.trim(),
+          category,
+          brand: getBrandFromTitle(title, category),
+          year: Number(year),
+          price: formatPrice(price),
+          price_raw: Number(price) || 0,
+          km: "New listing",
+          city: city.trim(),
+          fuel: category === "Tractor" ? "Diesel" : "Petrol",
+          transmission: category === "Tractor" ? "Manual" : "Automatic",
+          verified: true,
+          status: "Live",
+          source: "dealer",
+          booking_enabled: bookingEnabled,
+          img: mainImg,
+          images: uploadedUrls.length > 0 ? uploadedUrls : [mainImg]
+        }]);
 
-  const approve = id => {
-    const sub = publicSubs.find(s => s.id === id);
-    if (!sub) return;
-    const img =
-      sub.photos[0] ||
-      (sub.type === "Bike"
-        ? IMAGES.bike2
-        : sub.type === "Tractor"
-          ? IMAGES.tractor1
-          : IMAGES.sedan);
-    const listing = {
-      id: sub.id,
-      title: sub.title,
-      category: sub.type,
-      year: Number(sub.year) || new Date().getFullYear(),
-      priceRaw: Number(sub.price) || 0,
-      price: formatPrice(sub.price),
-      km: "New listing",
-      city: "Dealer stock",
-      fuel: sub.type === "Tractor" ? "Diesel" : "Petrol",
-      transmission: sub.type === "Tractor" ? "Manual" : "Automatic",
-      verified: true,
-      status: "Live",
-      source: "public", // Approved public submissions go to Marketplace page!
-      img,
-      images: sub.photos && sub.photos.length > 0 ? sub.photos : [img],
-      days: "Today",
-      brand: getBrandFromTitle(sub.title, sub.type),
-    };
-    const updated = [listing, ...dealer];
-    setDealer(updated);
-    saveDealerListings(updated);
-    setPublicSubs(publicSubs.filter(s => s.id !== id));
-    localStorage.setItem(
-      "waseem_submissions",
-      JSON.stringify(publicSubs.filter(s => s.id !== id))
-    );
-    toast.success(`"${listing.title}" approved and now live in Marketplace.`);
-  };
+      if (error) throw error;
 
-  const reject = id => {
-    setPublicSubs(publicSubs.filter(s => s.id !== id));
-    localStorage.setItem(
-      "waseem_submissions",
-      JSON.stringify(publicSubs.filter(s => s.id !== id))
-    );
-    toast.info("Submission rejected.");
-  };
-
-  const toggleBooking = (id) => {
-    const updated = dealer.map((l) =>
-      l.id === id ? { ...l, bookingEnabled: !l.bookingEnabled } : l
-    );
-    setDealer(updated);
-    saveDealerListings(updated);
-    const item = updated.find((l) => l.id === id);
-    if (item.bookingEnabled) {
-      toast.success(`"${item.title}" enabled for booking.`);
-    } else {
-      toast.info(`"${item.title}" disabled for booking.`);
+      toast.dismiss();
+      toast.success(`"${title}" is now live.`);
+      setTitle("");
+      setYear("");
+      setPrice("");
+      setCity("");
+      setUploadedPhotos([]);
+      setPhotoFiles([]);
+      setBookingEnabled(false);
+      setTab("manage");
+      loadData();
+    } catch (err) {
+      toast.dismiss();
+      console.error("Error adding listing:", err);
+      toast.error("Failed to add listing.");
     }
   };
 
-  const saveSpareParts = (updatedParts) => {
-    localStorage.setItem("waseem_spare_parts", JSON.stringify(updatedParts));
-    setParts(updatedParts);
+  const setStatus = async (id, status) => {
+    try {
+      if (status === "Removed") {
+        const { error } = await supabase
+          .from("listings")
+          .delete()
+          .eq("id", id);
+        if (error) throw error;
+        toast.success("Listing removed.");
+      } else {
+        const { error } = await supabase
+          .from("listings")
+          .update({ status })
+          .eq("id", id);
+        if (error) throw error;
+        toast.success(
+          status === "Sold" ? "Marked as Sold." : "Listing restored to Live."
+        );
+      }
+      loadData();
+    } catch (err) {
+      console.error("Error setting status:", err);
+      toast.error("Failed to update listing status.");
+    }
   };
 
-  const addSparePart = (e) => {
+  const approve = async (id) => {
+    try {
+      const { error } = await supabase
+        .from("listings")
+        .update({ status: "Live", verified: true })
+        .eq("id", id);
+      if (error) throw error;
+      toast.success("Listing approved and now live in Marketplace.");
+      loadData();
+    } catch (err) {
+      console.error("Error approving listing:", err);
+      toast.error("Failed to approve listing.");
+    }
+  };
+
+  const reject = async (id) => {
+    try {
+      const { error } = await supabase
+        .from("listings")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      toast.info("Submission rejected.");
+      loadData();
+    } catch (err) {
+      console.error("Error rejecting listing:", err);
+      toast.error("Failed to reject listing.");
+    }
+  };
+
+  const removeListing = async (id) => {
+    try {
+      const { error } = await supabase
+        .from("listings")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      toast.info("Listing removed from database.");
+      loadData();
+    } catch (err) {
+      console.error("Error removing listing:", err);
+      toast.error("Failed to remove listing.");
+    }
+  };
+
+  const toggleBooking = async (id) => {
+    const listing = dealer.find(l => l.id === id);
+    if (!listing) return;
+    try {
+      const { error } = await supabase
+        .from("listings")
+        .update({ booking_enabled: !listing.bookingEnabled })
+        .eq("id", id);
+      if (error) throw error;
+      if (!listing.bookingEnabled) {
+        toast.success(`"${listing.title}" enabled for booking.`);
+      } else {
+        toast.info(`"${listing.title}" disabled for booking.`);
+      }
+      loadData();
+    } catch (err) {
+      console.error("Error toggling booking:", err);
+      toast.error("Failed to toggle booking status.");
+    }
+  };
+
+  const addSparePart = async (e) => {
     e.preventDefault();
     if (!partName.trim() || !partPrice.trim() || !partCompatible.trim()) {
       toast.error("Please fill in the part details first.");
       return;
     }
-    const nextPart = {
-      id: Date.now(),
-      name: partName,
-      price: partPrice.startsWith("Rs") ? partPrice : `Rs ${Number(partPrice).toLocaleString()}`,
-      compatible: partCompatible.split(",").map(s => s.trim()).filter(Boolean),
-      img: partPhoto || IMAGES.part1,
-    };
-    const updated = [nextPart, ...parts];
-    saveSpareParts(updated);
-    setPartName("");
-    setPartPrice("");
-    setPartCompatible("");
-    setPartPhoto("");
-    toast.success(`"${nextPart.name}" added to Spare Parts.`);
+
+    toast.loading("Adding spare part...");
+
+    try {
+      let partImgUrl = IMAGES.part1;
+      if (partPhotoFile) {
+        const url = await uploadImageToSupabase(partPhotoFile, "parts");
+        if (url) partImgUrl = url;
+      }
+
+      const { error } = await supabase
+        .from("spare_parts")
+        .insert([{
+          name: partName.trim(),
+          price: partPrice.startsWith("Rs") ? partPrice : `Rs ${Number(partPrice).toLocaleString()}`,
+          price_raw: Number(partPrice) || 0,
+          compatible: partCompatible.split(",").map(s => s.trim()).filter(Boolean),
+          img: partImgUrl
+        }]);
+
+      if (error) throw error;
+
+      toast.dismiss();
+      toast.success(`"${partName}" added to Spare Parts.`);
+      setPartName("");
+      setPartPrice("");
+      setPartCompatible("");
+      setPartPhoto("");
+      setPartPhotoFile(null);
+      loadData();
+    } catch (err) {
+      toast.dismiss();
+      console.error("Error adding part:", err);
+      toast.error("Failed to add spare part.");
+    }
   };
 
-  const removeSparePart = (id) => {
-    const updated = parts.filter(p => p.id !== id);
-    saveSpareParts(updated);
-    toast.info("Spare part removed.");
+  const removeSparePart = async (id) => {
+    try {
+      const { error } = await supabase
+        .from("spare_parts")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      toast.info("Spare part removed.");
+      loadData();
+    } catch (err) {
+      console.error("Error removing spare part:", err);
+      toast.error("Failed to remove spare part.");
+    }
   };
 
   const sections = useMemo(
@@ -536,9 +720,16 @@ export default function Admin() {
                             alt={l.title}
                             className="h-10 w-14 rounded object-cover"
                           />
-                          <span className="font-semibold">
-                            {l.year} {l.title}
-                          </span>
+                          <div>
+                            <span className="font-semibold block">
+                              {l.year} {l.title}
+                            </span>
+                            {l.source === "public" && (
+                              <span className="text-[10px] text-muted-foreground block mt-0.5 font-semibold">
+                                Marketplace (Seller: {l.km})
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">
@@ -592,8 +783,8 @@ export default function Admin() {
                           )}
                           <button
                             onClick={() => {
-                              if (window.confirm(`Remove "${l.title}"?`))
-                                setStatus(l.id, "Sold");
+                              if (window.confirm(`Are you sure you want to permanently delete "${l.title}" from the database?`))
+                                removeListing(l.id);
                             }}
                             title="Remove"
                             className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/5"
@@ -634,31 +825,30 @@ export default function Admin() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                          {s.type} • {s.year || "Year not given"}
+                          {s.category} • {s.year || "Year not given"}
                         </p>
                         <h3 className="mt-0.5 text-xl font-display font-bold">
                           {s.title}
                         </h3>
                         <p className="mt-1 price-chip">
-                          Rs {Number(s.price || 0).toLocaleString()}
+                          {s.price}
                         </p>
                       </div>
-                      {s.photos[0] && (
+                      {s.img && (
                         <img
-                          src={s.photos[0]}
+                          src={s.img}
                           alt={s.title}
                           className="h-16 w-20 rounded object-cover"
                         />
                       )}
                     </div>
-                    {s.description && (
+                    {s.city && (
                       <p className="mt-3 text-xs text-muted-foreground">
-                        {s.description}
+                        {s.city}
                       </p>
                     )}
                     <p className="mt-3 text-xs text-muted-foreground">
-                      From: {s.name} — {s.phone} •{" "}
-                      {new Date(s.createdAt).toLocaleString()}
+                      From: {(s.km || "").split(" | ")[0] || "Anonymous"} — {(s.km || "").split(" | ")[1] || "No phone"}
                     </p>
                     <div className="mt-4 flex gap-2">
                       <button
@@ -1179,7 +1369,10 @@ export default function Admin() {
                         <img src={photo} alt="Listing preview" className="h-full w-full object-cover" />
                         <button
                           type="button"
-                          onClick={() => setEditPhotos(prev => prev.filter((_, i) => i !== idx))}
+                          onClick={() => {
+                            setEditPhotos(prev => prev.filter((_, i) => i !== idx));
+                            setEditPhotoFiles(prev => prev.filter((_, i) => i !== idx));
+                          }}
                           className="absolute top-0.5 right-0.5 h-4 w-4 bg-black/75 text-white rounded-full flex items-center justify-center hover:bg-black cursor-pointer"
                         >
                           <X className="h-2.5 w-2.5" />

@@ -3,9 +3,8 @@
  * Reads ?type=&brand=&price=&location= from the URL, filters the stock,
  * and shows results as a clean card grid.
  */
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "wouter";
-import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
@@ -15,7 +14,10 @@ import { useReveal } from "@/hooks/useReveal";
 export default function SearchPage() {
   useReveal();
   const [params, setParams] = useSearchParams();
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState([]);
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
   const type = params.get("type") ?? "any";
   const brand = params.get("brand") ?? "any";
   const price = params.get("price") ?? "any";

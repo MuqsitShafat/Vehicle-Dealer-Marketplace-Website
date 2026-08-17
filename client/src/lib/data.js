@@ -1,3 +1,4 @@
+import { supabase } from "./supabase";
 import heroBg from "../assets/images/hero_background_image1.png";
 import altisImg from "../assets/images/Cars/Altis.jpeg";
 import altisFrontImg from "../assets/images/Cars/Altis_front_pic.jpeg";
@@ -454,6 +455,23 @@ export const CONTACT = {
   },
 };
 
+export function formatPrice(amount) {
+  const num = Number(amount) || 0;
+  if (num < 100000) {
+    return `Rs ${num.toLocaleString()}`;
+  } else if (num < 10000000) {
+    const lacs = num / 100000;
+    const formatted =
+      lacs % 1 === 0 ? lacs : lacs.toFixed(2).replace(/\.?0+$/, "");
+    return `Rs ${formatted} Lac`;
+  } else {
+    const crores = num / 10000000;
+    const formatted =
+      crores % 1 === 0 ? crores : crores.toFixed(2).replace(/\.?0+$/, "");
+    return `Rs ${formatted} Cr`;
+  }
+}
+
 export function getBrandFromTitle(title, category) {
   if (!title) return "Other";
   const t = title.toLowerCase();
@@ -475,83 +493,141 @@ export function getBrandFromTitle(title, category) {
   return "Other";
 }
 
-export function getCurrentListings() {
-  if (typeof window === "undefined") return LISTINGS;
+export async function getCurrentListings() {
   try {
-    const raw = localStorage.getItem("waseem_dealer_listings");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // Restore dynamic imports for static listings so they don't break on new builds
-        return parsed.map(item => {
-          const staticItem = LISTINGS.find(l => l.id === item.id);
-          const detectedBrand =
-            item.brand || getBrandFromTitle(item.title, item.category || "Car");
-          if (staticItem) {
-            return {
-              ...item,
-              img: staticItem.img,
-              images: staticItem.images,
-              source: item.source || "dealer",
-              bookingEnabled: item.bookingEnabled || false,
-              brand: detectedBrand,
-            };
-          }
-          return {
-            ...item,
-            bookingEnabled: item.bookingEnabled || false,
-            brand: detectedBrand,
-          };
-        });
-      }
-    }
-  } catch (e) {
-    console.error("Error reading listings from localStorage", e);
-  }
+    const { data: dbListings, error } = await supabase
+      .from("listings")
+      .select("*")
+      .order("id", { ascending: true });
 
-  // Seed default listings
-  const seeded = LISTINGS.map(item => ({
-    ...item,
-    source: "dealer",
-    bookingEnabled: false,
-    brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
-  }));
-  try {
-    localStorage.setItem("waseem_dealer_listings", JSON.stringify(seeded));
+    if (error) throw error;
+
+    // Auto-seed if empty
+    if (!dbListings || dbListings.length === 0) {
+      console.log("Supabase listings empty. Seeding initial stock...");
+      const seeded = LISTINGS.map(item => ({
+        title: item.title,
+        category: item.category || "Car",
+        brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
+        year: Number(item.year),
+        price: item.price,
+        price_raw: Number(item.priceRaw) || 0,
+        km: item.km || "0 km",
+        city: item.city || "Bhakkar",
+        fuel: item.fuel || "Petrol",
+        transmission: item.transmission || "Automatic",
+        verified: item.verified || false,
+        status: item.status || "Live",
+        source: item.source || "dealer",
+        booking_enabled: item.bookingEnabled || false,
+        img: item.img || "",
+        images: item.images || []
+      }));
+
+      const { data: inserted, error: insertErr } = await supabase
+        .from("listings")
+        .insert(seeded)
+        .select();
+
+      if (insertErr) throw insertErr;
+      
+      return (inserted || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        brand: item.brand,
+        year: item.year,
+        price: item.price,
+        priceRaw: Number(item.price_raw),
+        km: item.km,
+        city: item.city,
+        fuel: item.fuel,
+        transmission: item.transmission,
+        verified: item.verified,
+        status: item.status,
+        source: item.source,
+        bookingEnabled: item.booking_enabled,
+        img: item.img,
+        images: item.images || [],
+      }));
+    }
+
+    return dbListings.map(item => ({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      brand: item.brand,
+      year: item.year,
+      price: item.price,
+      priceRaw: Number(item.price_raw),
+      km: item.km,
+      city: item.city,
+      fuel: item.fuel,
+      transmission: item.transmission,
+      verified: item.verified,
+      status: item.status,
+      source: item.source,
+      bookingEnabled: item.booking_enabled,
+      img: item.img,
+      images: item.images || [],
+    }));
   } catch (e) {
-    console.error("Error seeding listings to localStorage", e);
+    console.error("Error reading listings from Supabase", e);
+    return LISTINGS.map(item => ({
+      ...item,
+      brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
+      bookingEnabled: item.bookingEnabled || false,
+      priceRaw: Number(item.priceRaw) || 0
+    }));
   }
-  return seeded;
 }
 
-export function getCurrentSpareParts() {
-  if (typeof window === "undefined") return SPARE_PARTS;
+export async function getCurrentSpareParts() {
   try {
-    const raw = localStorage.getItem("waseem_spare_parts");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map(item => {
-          const staticItem = SPARE_PARTS.find(p => p.id === item.id);
-          if (staticItem) {
-            return {
-              ...item,
-              img: staticItem.img,
-            };
-          }
-          return item;
-        });
-      }
-    }
-  } catch (e) {
-    console.error("Error reading spare parts from localStorage", e);
-  }
+    const { data: dbParts, error } = await supabase
+      .from("spare_parts")
+      .select("*")
+      .order("id", { ascending: true });
 
-  // Seed default spare parts
-  try {
-    localStorage.setItem("waseem_spare_parts", JSON.stringify(SPARE_PARTS));
+    if (error) throw error;
+
+    if (!dbParts || dbParts.length === 0) {
+      console.log("Supabase spare parts empty. Seeding initial stock...");
+      const seeded = SPARE_PARTS.map(item => ({
+        name: item.name,
+        price: item.price,
+        price_raw: Number(item.priceRaw) || 0,
+        compatible: item.compatible || [],
+        img: item.img || "",
+      }));
+
+      const { data: inserted, error: insertErr } = await supabase
+        .from("spare_parts")
+        .insert(seeded)
+        .select();
+
+      if (insertErr) throw insertErr;
+      
+      return (inserted || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        priceRaw: Number(item.price_raw),
+        compatible: item.compatible || [],
+        img: item.img,
+      }));
+    }
+
+    return dbParts.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      priceRaw: Number(item.price_raw),
+      compatible: item.compatible || [],
+      img: item.img,
+    }));
   } catch (e) {
-    console.error("Error seeding spare parts to localStorage", e);
+    console.error("Error reading spare parts from Supabase", e);
+    return SPARE_PARTS;
   }
-  return SPARE_PARTS;
 }

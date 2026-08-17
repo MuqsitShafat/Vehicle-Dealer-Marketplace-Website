@@ -20,8 +20,8 @@ import {
 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
-import { useState } from "react";
-import { getCurrentListings, CONTACT, IMAGES } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { getCurrentListings, CONTACT, IMAGES, LISTINGS, getBrandFromTitle } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import InfiniteCarousel from "@/components/ui/InfiniteCarousel";
 import { WhatsAppIcon } from "@/components/SocialIcons";
@@ -30,7 +30,18 @@ export default function VehicleDetail() {
   useReveal();
   const [, params] = useRoute("/vehicle/:id");
   const [, navigate] = useLocation();
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState(() => {
+    return LISTINGS.map(item => ({
+      ...item,
+      brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
+      bookingEnabled: item.bookingEnabled || false,
+      priceRaw: Number(item.priceRaw) || 0
+    }));
+  });
+
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
   const id = Number(params?.id);
   const item = listings.find((l) => l.id === id);
   const car = item ?? listings[0];
@@ -92,7 +103,7 @@ export default function VehicleDetail() {
                 <MapPin className="h-4 w-4 text-primary" /> {car.city}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Gauge className="h-4 w-4" /> {car.km}
+                <Gauge className="h-4 w-4" /> {car.source === "public" ? "Muhammad Waseem | 0333-2834567" : car.km}
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Fuel className="h-4 w-4" /> {car.fuel}

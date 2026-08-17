@@ -28,10 +28,13 @@ export default function HeroSearch() {
   const containerRef = useRef(null);
 
   // Dynamic brand list based on selected category type
-  const availableBrands =
-    type && type !== "any"
-      ? BRANDS[type]
-      : [...BRANDS.Car, ...BRANDS.Bike, ...BRANDS.Tractor];
+  const availableBrands = Array.from(
+    new Set(
+      type && type !== "any"
+        ? BRANDS[type]
+        : [...BRANDS.Car, ...BRANDS.Bike, ...BRANDS.Tractor]
+    )
+  );
 
   // Dynamic price ranges based on selected category type
   const availablePriceRanges =

@@ -12,43 +12,62 @@ export function useReveal() {
   const [location] = useLocation();
 
   useEffect(() => {
-    // Clean up all existing triggers first to prevent duplication/stale references
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
     const ctx = gsap.context(() => {
       const els = document.querySelectorAll(".reveal");
-      
-      // Clear any prior GSAP inline styles to prevent animation mismatches
       els.forEach((el) => {
+        el.removeAttribute("data-reveal-init");
         gsap.set(el, { clearProps: "opacity,transform" });
-      });
-
-      els.forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
       });
     });
 
-    // Refresh scroll triggers to account for dynamic DOM adjustments
-    setTimeout(() => {
+    const runSetup = () => {
+      ctx.add(() => {
+        const newEls = document.querySelectorAll(".reveal:not([data-reveal-init])");
+        if (newEls.length === 0) return;
+        newEls.forEach((el) => {
+          el.setAttribute("data-reveal-init", "true");
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 88%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      });
       ScrollTrigger.refresh();
-    }, 50);
+    };
+
+    runSetup();
+
+    let debounceTimer;
+    const observer = new MutationObserver(() => {
+      const uninitialized = document.querySelector(".reveal:not([data-reveal-init])");
+      if (uninitialized) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(runSetup, 50);
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
     return () => {
+      clearTimeout(debounceTimer);
       ctx.revert();
+      observer.disconnect();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [location]);

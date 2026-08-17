@@ -7,15 +7,30 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Camera, Plus, X, CheckCircle2 } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
-import { CATEGORIES, IMAGES } from "@/lib/data";
+import { CATEGORIES, IMAGES, getBrandFromTitle, formatPrice } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import { WhatsAppIcon } from "@/components/SocialIcons";
+import { supabase } from "@/lib/supabase";
 
-function loadSubmissions() {
+async function uploadImageToSupabase(file, bucketName) {
   try {
-    return JSON.parse(localStorage.getItem("waseem_submissions") || "[]");
-  } catch {
-    return [];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(fileName, file);
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
   }
 }
 
@@ -29,45 +44,85 @@ export default function SellPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [photos, setPhotos] = useState([]);
+  const [photoFiles, setPhotoFiles] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onPhotos = files => {
     if (!files) return;
+    const filesArray = Array.from(files);
+    setPhotoFiles(p => [...p, ...filesArray].slice(0, 4));
+
     const next = [];
-    Array.from(files).forEach(file => {
+    filesArray.forEach(file => {
       if (next.length + photos.length >= 4) return;
       const reader = new FileReader();
       reader.onload = () => next.push(reader.result);
       reader.readAsDataURL(file);
     });
-    setTimeout(() => setPhotos(p => [...p, ...next]), 100);
+    setTimeout(() => setPhotos(p => [...p, ...next].slice(0, 4)), 100);
   };
 
-  const submit = e => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !price.trim() || !name.trim() || !phone.trim()) {
       toast.error("Please fill in the title, price and your contact details.");
       return;
     }
-    const item = {
-      id: Date.now(),
-      type,
-      title,
-      year,
-      price,
-      description,
-      name,
-      phone,
-      photos,
-      createdAt: new Date().toISOString(),
-      status: "Pending",
-    };
-    localStorage.setItem(
-      "waseem_submissions",
-      JSON.stringify([...loadSubmissions(), item])
-    );
-    setSubmitted(true);
-    toast.success("Submission received — awaiting dealer approval.");
+    
+    setIsSubmitting(true);
+    toast.loading("Uploading photos and saving your submission...");
+
+    try {
+      const uploadedUrls = [];
+      for (const file of photoFiles) {
+        const url = await uploadImageToSupabase(file, "listings");
+        if (url) {
+          uploadedUrls.push(url);
+        }
+      }
+
+      const mainImg = uploadedUrls[0] || (
+        type === "Bike"
+          ? "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80"
+          : type === "Tractor"
+            ? "https://images.unsplash.com/photo-1599930995924-f7b2c019ff56?auto=format&fit=crop&w=800&q=80"
+            : "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=800&q=80"
+      );
+
+      const { error } = await supabase
+        .from("listings")
+        .insert([{
+          title: title.trim(),
+          category: type,
+          brand: getBrandFromTitle(title, type),
+          year: Number(year) || new Date().getFullYear(),
+          price: formatPrice(price),
+          price_raw: Number(price) || 0,
+          km: `${name.trim()} | ${phone.trim()}`,
+          city: description.trim() || "No description provided",
+          fuel: type === "Tractor" ? "Diesel" : "Petrol",
+          transmission: type === "Tractor" ? "Manual" : "Automatic",
+          verified: false,
+          status: "Pending",
+          source: "public",
+          booking_enabled: false,
+          img: mainImg,
+          images: uploadedUrls.length > 0 ? uploadedUrls : [mainImg]
+        }]);
+
+      if (error) throw error;
+
+      toast.dismiss();
+      setSubmitted(true);
+      toast.success("Submission received — awaiting dealer approval.");
+    } catch (err) {
+      toast.dismiss();
+      console.error("Error submitting listing:", err);
+      toast.error("Failed to submit. Please check your internet connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -220,9 +275,10 @@ export default function SellPage() {
                   />
                   <button
                     type="button"
-                    onClick={() =>
-                      setPhotos(ps => ps.filter((_, j) => j !== i))
-                    }
+                    onClick={() => {
+                      setPhotos(ps => ps.filter((_, j) => j !== i));
+                      setPhotoFiles(ps => ps.filter((_, j) => j !== i));
+                    }}
                     className="absolute right-1 top-1 rounded-full bg-primary p-1 text-white"
                     aria-label="Remove photo"
                   >
@@ -274,9 +330,10 @@ export default function SellPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="submit"
-              className="rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg"
+              disabled={isSubmitting}
+              className="rounded-md bg-[oklch(0.72_0.17_55)] px-6 py-3 text-sm font-bold text-[oklch(0.2_0.05_255)] transition-shadow hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit for approval
+              {isSubmitting ? "Submitting..." : "Submit for approval"}
             </button>
             <a
               href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem Motors, I would like to submit my ${type} (${title || "Vehicle"}) for approval and listing.`)}`}

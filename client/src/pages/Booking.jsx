@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Calendar, Phone, Mail, ArrowRight, MessageCircle } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
@@ -6,10 +6,14 @@ import ListingCard from "@/components/ListingCard";
 import { CONTACT, getCurrentListings } from "@/lib/data";
 import { useReveal } from "@/hooks/useReveal";
 import { WhatsAppIcon } from "@/components/SocialIcons";
+import { supabase } from "@/lib/supabase";
 
 export default function Booking() {
   useReveal();
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState([]);
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
@@ -18,7 +22,7 @@ export default function Booking() {
 
   const bookingListings = listings.filter((l) => l.bookingEnabled && l.status === "Live");
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !city.trim()) {
       toast.error("Please fill in your name, phone, and city.");
@@ -31,18 +35,18 @@ export default function Booking() {
     }
 
     try {
-      const existing = JSON.parse(localStorage.getItem("waseem_booking_inquiries") || "[]");
-      const newInquiry = {
-        id: Date.now(),
-        name: name.trim(),
-        phone: phone.trim(),
-        city: city.trim(),
-        interest: interest,
-        date: new Date().toLocaleString(),
-      };
-      localStorage.setItem("waseem_booking_inquiries", JSON.stringify([newInquiry, ...existing]));
+      const { data, error } = await supabase
+        .from("booking_inquiries")
+        .insert([{
+          name: name.trim(),
+          phone: phone.trim(),
+          city: city.trim(),
+          interest: interest,
+        }]);
+
+      if (error) throw error;
     } catch (err) {
-      console.error("Error saving booking inquiry:", err);
+      console.error("Error saving booking inquiry to Supabase:", err);
     }
 
     setSubmitted(true);

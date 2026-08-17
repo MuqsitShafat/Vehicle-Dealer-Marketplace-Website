@@ -5,7 +5,7 @@
  * Palette: deep blue + white canvas + orange accents.
  */
 import { Link } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   BadgeCheck,
@@ -96,7 +96,10 @@ const FOOTER_LINKS = [
 
 export default function Home() {
   useReveal();
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState([]);
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 

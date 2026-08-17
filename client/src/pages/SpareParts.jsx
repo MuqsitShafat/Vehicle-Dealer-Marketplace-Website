@@ -2,7 +2,7 @@
  * Waseem — Spare Parts page.
  * Grid: image, name, price, compatible vehicle models, WhatsApp inquiry button.
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import { getCurrentSpareParts, IMAGES } from "@/lib/data";
 import { Wrench, Car, Search } from "lucide-react";
@@ -10,7 +10,10 @@ import { useReveal } from "@/hooks/useReveal";
 
 export default function SpareParts() {
   useReveal();
-  const [parts] = useState(() => getCurrentSpareParts());
+  const [parts, setParts] = useState([]);
+  useEffect(() => {
+    getCurrentSpareParts().then(setParts);
+  }, []);
   const [searchQuery, setSearchQuery] = useState("");
 
   const wa = (name, price) =>

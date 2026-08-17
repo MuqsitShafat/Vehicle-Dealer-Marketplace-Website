@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import SiteHeader from "@/components/SiteHeader";
 import ListingCard from "@/components/ListingCard";
@@ -8,7 +8,10 @@ import { useReveal } from "@/hooks/useReveal";
 
 export default function Marketplace() {
   useReveal();
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState([]);
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
 
   const publicListings = listings.filter(
     (l) => l.source === "public" && l.status === "Live"

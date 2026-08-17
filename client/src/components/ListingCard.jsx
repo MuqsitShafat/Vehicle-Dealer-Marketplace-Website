@@ -79,7 +79,7 @@ export default function ListingCard({ item }) {
             <MapPin className="h-3.5 w-3.5" /> {item.city}
           </span>
           <span className="inline-flex items-center gap-1">
-            <Gauge className="h-3.5 w-3.5" /> {item.km}
+            <Gauge className="h-3.5 w-3.5" /> {item.source === "public" ? "Muhammad Waseem | 0333-2834567" : item.km}
           </span>
           <span className="inline-flex items-center gap-1">
             <Fuel className="h-3.5 w-3.5" /> {item.fuel}

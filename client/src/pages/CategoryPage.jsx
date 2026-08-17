@@ -12,7 +12,11 @@ import { useReveal } from "@/hooks/useReveal";
 export default function CategoryPage({ category }) {
   useReveal();
   const [brand, setBrand] = useState("any");
-  const [listings] = useState(() => getCurrentListings());
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    getCurrentListings().then(setListings);
+  }, []);
 
   // Reset selected brand when switching categories (e.g. from Bike to Car)
   useEffect(() => {
