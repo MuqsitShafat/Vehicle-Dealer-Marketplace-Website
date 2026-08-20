@@ -27,16 +27,20 @@
     <script type="module" src="/src/main.jsx"></script>
 
     <!-- Hidden form definitions for Netlify Bot Detection & Forms Integration -->
-    <form name="contact_home" data-netlify="true" hidden>
-      <input type="email" name="email" />
-      <textarea name="message"></textarea>
-    </form>
-    <form name="contact_page" data-netlify="true" hidden>
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-      <input type="text" name="phone" />
-      <input type="text" name="subject" />
-      <textarea name="message"></textarea>
-    </form>
+    <div style="display: none;">
+      <form name="contact_home" data-netlify="true">
+        <input type="email" name="email" />
+        <textarea name="message"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+      <form name="contact_page" data-netlify="true">
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <input type="text" name="phone" />
+        <input type="text" name="subject" />
+        <textarea name="message"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </body>
 </html>
