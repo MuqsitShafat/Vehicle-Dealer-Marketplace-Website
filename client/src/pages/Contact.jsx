@@ -37,9 +37,26 @@ export default function Contact() {
       return;
     }
 
-    // Simulate submission
-    setSubmitted(true);
-    toast.success("Thank you! Your message has been received.");
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        "form-name": "contact_page",
+        name: name,
+        email: email,
+        phone: phone,
+        subject: subject,
+        message: message,
+      }).toString(),
+    })
+      .then(() => {
+        setSubmitted(true);
+        toast.success("Thank you! Your message has been received.");
+      })
+      .catch(err => {
+        console.error("Netlify Form Submission Error:", err);
+        toast.error("Failed to submit form. Please use WhatsApp or try again.");
+      });
   };
 
   return (
@@ -98,7 +115,7 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} name="contact_page" data-netlify="true">
                 <h2 className="text-xl font-display font-bold uppercase tracking-tight">
                   Send Us A Message
                 </h2>
@@ -114,6 +131,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="text"
+                      name="name"
                       required
                       value={name}
                       onChange={e => setName(e.target.value)}
@@ -127,6 +145,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       required
                       value={email}
                       onChange={e => setEmail(e.target.value)}
@@ -140,6 +159,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="tel"
+                      name="phone"
                       value={phone}
                       onChange={e => setPhone(e.target.value)}
                       placeholder="e.g. 03001234567"
@@ -151,6 +171,7 @@ export default function Contact() {
                       Inquiry Subject
                     </label>
                     <select
+                      name="subject"
                       value={subject}
                       onChange={e => setSubject(e.target.value)}
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
@@ -169,6 +190,7 @@ export default function Contact() {
                     Message *
                   </label>
                   <textarea
+                    name="message"
                     required
                     rows={5}
                     value={message}
@@ -230,7 +252,7 @@ export default function Contact() {
                     WhatsApp Chat
                   </p>
                   <a
-                    href="https://wa.me/923332834567"
+                    href="https://wa.me/923121537773"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center gap-3 rounded-md border border-border bg-[#25D366]/5 p-2.5 hover:border-[#25D366]/50 transition-colors group text-left"
@@ -240,10 +262,10 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-card-foreground">
-                        Muhammad Waseem Awan
+                        Muhammad Akash Awan
                       </p>
                       <p className="text-[11px] text-muted-foreground">
-                        0333-2834567
+                        0312-1537773
                       </p>
                     </div>
                   </a>
@@ -284,7 +306,7 @@ export default function Contact() {
               </p>
               <div className="mt-5 flex items-center gap-3">
                 <a
-                  href="https://wa.me/923332834567"
+                  href="https://wa.me/923121537773"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
@@ -293,7 +315,7 @@ export default function Contact() {
                   <WhatsAppIcon className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                  href="https://www.youtube.com/@waseemhondabhakkar"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
@@ -302,7 +324,7 @@ export default function Contact() {
                   <YouTubeIcon className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                  href="https://www.tiktok.com/@waseem_honda?_r=1&_t=ZS-992Giz8Oeou"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="TikTok"
@@ -311,7 +333,7 @@ export default function Contact() {
                   <TikTokIcon className="h-4.5 w-4.5" />
                 </a>
                 <a
-                  href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                  href="https://www.instagram.com/awan________786?igsh=YmxhbnZpbXlyaTlu&igsi=YmxhbnZpbXlyaTlu"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -320,7 +342,7 @@ export default function Contact() {
                   <InstagramIcon className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                  href="https://www.facebook.com/profile.php?id=100093236010103&rdid=G795E3Mc4lV26HvU&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BQnth72tJ%2F#"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"

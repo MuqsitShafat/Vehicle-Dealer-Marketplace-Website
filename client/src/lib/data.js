@@ -438,14 +438,13 @@ export const CATEGORIES = [
 
 export const CONTACT = {
   email: "waseemmotors77@gmail.com",
-  phone: "03332834567",
-  whatsapp: "03332834567",
+  phone: "03121537773",
+  whatsapp: "03121537773",
   address: "Darya Khan Road, Bhakkar, Punjab, Pakistan",
   hours: "Sat – Thu: 9:00 AM – 8:00 PM (Friday Off)",
   emails: ["waseemmotors77@gmail.com", "waseemhondabhakkar@gmail.com"],
   phones: [
     { name: "Muhammad Akash Awan", number: "03121537773" },
-    { name: "Muhammad Waseem Awan", number: "03332834567" },
     { name: "Abdul Sattar Awan", number: "03007789481" },
   ],
   showrooms: {
@@ -502,57 +501,7 @@ export async function getCurrentListings() {
 
     if (error) throw error;
 
-    // Auto-seed if empty
-    if (!dbListings || dbListings.length === 0) {
-      console.log("Supabase listings empty. Seeding initial stock...");
-      const seeded = LISTINGS.map(item => ({
-        title: item.title,
-        category: item.category || "Car",
-        brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
-        year: Number(item.year),
-        price: item.price,
-        price_raw: Number(item.priceRaw) || 0,
-        km: item.km || "0 km",
-        city: item.city || "Bhakkar",
-        fuel: item.fuel || "Petrol",
-        transmission: item.transmission || "Automatic",
-        verified: item.verified || false,
-        status: item.status || "Live",
-        source: item.source || "dealer",
-        booking_enabled: item.bookingEnabled || false,
-        img: item.img || "",
-        images: item.images || []
-      }));
-
-      const { data: inserted, error: insertErr } = await supabase
-        .from("listings")
-        .insert(seeded)
-        .select();
-
-      if (insertErr) throw insertErr;
-      
-      return (inserted || []).map(item => ({
-        id: item.id,
-        title: item.title,
-        category: item.category,
-        brand: item.brand,
-        year: item.year,
-        price: item.price,
-        priceRaw: Number(item.price_raw),
-        km: item.km,
-        city: item.city,
-        fuel: item.fuel,
-        transmission: item.transmission,
-        verified: item.verified,
-        status: item.status,
-        source: item.source,
-        bookingEnabled: item.booking_enabled,
-        img: item.img,
-        images: item.images || [],
-      }));
-    }
-
-    return dbListings.map(item => ({
+    return (dbListings || []).map(item => ({
       id: item.id,
       title: item.title,
       category: item.category,
@@ -573,12 +522,7 @@ export async function getCurrentListings() {
     }));
   } catch (e) {
     console.error("Error reading listings from Supabase", e);
-    return LISTINGS.map(item => ({
-      ...item,
-      brand: item.brand || getBrandFromTitle(item.title, item.category || "Car"),
-      bookingEnabled: item.bookingEnabled || false,
-      priceRaw: Number(item.priceRaw) || 0
-    }));
+    return [];
   }
 }
 
@@ -591,34 +535,7 @@ export async function getCurrentSpareParts() {
 
     if (error) throw error;
 
-    if (!dbParts || dbParts.length === 0) {
-      console.log("Supabase spare parts empty. Seeding initial stock...");
-      const seeded = SPARE_PARTS.map(item => ({
-        name: item.name,
-        price: item.price,
-        price_raw: Number(item.priceRaw) || 0,
-        compatible: item.compatible || [],
-        img: item.img || "",
-      }));
-
-      const { data: inserted, error: insertErr } = await supabase
-        .from("spare_parts")
-        .insert(seeded)
-        .select();
-
-      if (insertErr) throw insertErr;
-      
-      return (inserted || []).map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        priceRaw: Number(item.price_raw),
-        compatible: item.compatible || [],
-        img: item.img,
-      }));
-    }
-
-    return dbParts.map(item => ({
+    return (dbParts || []).map(item => ({
       id: item.id,
       name: item.name,
       price: item.price,
@@ -628,6 +545,6 @@ export async function getCurrentSpareParts() {
     }));
   } catch (e) {
     console.error("Error reading spare parts from Supabase", e);
-    return SPARE_PARTS;
+    return [];
   }
 }

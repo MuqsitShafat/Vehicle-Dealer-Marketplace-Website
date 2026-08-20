@@ -336,7 +336,7 @@ export default function SellPage() {
               {isSubmitting ? "Submitting..." : "Submit for approval"}
             </button>
             <a
-              href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem Motors, I would like to submit my ${type} (${title || "Vehicle"}) for approval and listing.`)}`}
+              href={`https://wa.me/923121537773?text=${encodeURIComponent(`Hi Waseem Motors, I would like to submit my ${type} (${title || "Vehicle"}) for approval and listing.`)}`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-md border border-[#25D366] text-[#25D366] hover:bg-[#25D366]/5 px-6 py-3 text-sm font-bold transition-all cursor-pointer"

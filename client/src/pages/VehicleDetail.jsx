@@ -103,7 +103,7 @@ export default function VehicleDetail() {
                 <MapPin className="h-4 w-4 text-primary" /> {car.city}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <Gauge className="h-4 w-4" /> {car.source === "public" ? "Muhammad Waseem | 0333-2834567" : car.km}
+                <Gauge className="h-4 w-4" /> {car.source === "public" ? "Muhammad Akash Awan | 0312-1537773" : car.km}
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Fuel className="h-4 w-4" /> {car.fuel}
@@ -163,8 +163,8 @@ export default function VehicleDetail() {
               </button>
             ) : (
               <div className="space-y-2 mt-4">
-                <a
-                  href={`https://wa.me/923332834567?text=${encodeURIComponent(`Hi Waseem, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
+                 <a
+                  href={`https://wa.me/923121537773?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 w-full rounded-md bg-[#25D366] py-3 text-sm font-bold text-white transition-shadow hover:shadow-lg"

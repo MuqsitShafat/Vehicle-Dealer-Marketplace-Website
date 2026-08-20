@@ -17,8 +17,8 @@ export default function SpareParts() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const wa = (name, price) =>
-    `https://wa.me/923332834567?text=${encodeURIComponent(
-      `Hi Waseem, I'm interested in: ${name} (${price})`
+    `https://wa.me/923121537773?text=${encodeURIComponent(
+      `Hi, I'm interested in: ${name} (${price})`
     )}`;
 
   const filteredParts = parts.filter((part) => {

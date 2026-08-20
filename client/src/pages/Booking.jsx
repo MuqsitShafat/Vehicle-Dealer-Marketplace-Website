@@ -132,7 +132,7 @@ export default function Booking() {
                   WhatsApp Support
                 </p>
                 <a
-                  href="https://wa.me/923332834567?text=Hi%20Waseem%20Motors,%20I%20want%20to%20book%20a%20vehicle."
+                  href="https://wa.me/923121537773?text=Hi%20Waseem%20Motors,%20I%20want%20to%20book%20a%20vehicle."
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md max-w-sm"
@@ -140,9 +140,9 @@ export default function Booking() {
                   <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                      Muhammad Waseem Awan
+                      Muhammad Akash Awan
                     </p>
-                    <p className="text-sm font-semibold text-foreground">0333-2834567</p>
+                    <p className="text-sm font-semibold text-foreground">0312-1537773</p>
                   </div>
                 </a>
               </div>

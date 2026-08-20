@@ -33,6 +33,7 @@ import {
 } from "@/components/SocialIcons";
 import {
   getCurrentListings,
+  getCurrentSpareParts,
   CATEGORIES,
   SPARE_PARTS,
   CONTACT,
@@ -97,8 +98,10 @@ const FOOTER_LINKS = [
 export default function Home() {
   useReveal();
   const [listings, setListings] = useState([]);
+  const [parts, setParts] = useState(SPARE_PARTS);
   useEffect(() => {
     getCurrentListings().then(setListings);
+    getCurrentSpareParts().then(setParts);
   }, []);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -109,12 +112,28 @@ export default function Home() {
       toast.error("Please fill in your email and message.");
       return;
     }
-    toast.success("Message received! We'll reply within one business day.");
-    setEmail("");
-    setMessage("");
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        "form-name": "contact_home",
+        email: email,
+        message: message,
+      }).toString(),
+    })
+      .then(() => {
+        toast.success("Message received! We'll reply within one business day.");
+        setEmail("");
+        setMessage("");
+      })
+      .catch(err => {
+        console.error("Netlify Form Error:", err);
+        toast.error("Failed to submit form. Please use WhatsApp or Try again.");
+      });
   };
 
-  const whatsappUrl = "https://wa.me/923332834567";
+  const whatsappUrl = "https://wa.me/923121537773";
 
   return (
     <div className="min-h-screen">
@@ -143,7 +162,7 @@ export default function Home() {
             {
               icon: Handshake,
               title: "Honest dealing",
-              desc: "Clear paperwork, no hidden fees, trusted since 2005",
+              desc: "Clear paperwork, no hidden fees, trusted since 1996",
             },
           ].map(t => (
             <div key={t.title} className="flex items-start gap-3">
@@ -246,7 +265,7 @@ export default function Home() {
               matched to the vehicle models it fits, so there's no guesswork.
             </p>
             <div className="mt-6 space-y-3">
-              {SPARE_PARTS.slice(0, 3).map(p => (
+              {parts.slice(0, 3).map(p => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between gap-3 rounded-md border border-border bg-card p-3"
@@ -475,7 +494,7 @@ export default function Home() {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/923332834567"
+              href="https://wa.me/923121537773"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
@@ -485,7 +504,7 @@ export default function Home() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                   WhatsApp Support
                 </p>
-                <p className="text-sm font-semibold">0333-2834567</p>
+                <p className="text-sm font-semibold">0312-1537773</p>
               </div>
             </a>
 
@@ -501,7 +520,7 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <a
-                  href="https://wa.me/923332834567"
+                  href="https://wa.me/923121537773"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
@@ -510,7 +529,7 @@ export default function Home() {
                   <WhatsAppIcon className="h-4.5 w-4.5" />
                 </a>
                 <a
-                  href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                  href="https://www.youtube.com/@waseemhondabhakkar"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="YouTube"
@@ -519,7 +538,7 @@ export default function Home() {
                   <YouTubeIcon className="h-4.5 w-4.5" />
                 </a>
                 <a
-                  href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                  href="https://www.tiktok.com/@waseem_honda?_r=1&_t=ZS-992Giz8Oeou"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="TikTok"
@@ -528,7 +547,7 @@ export default function Home() {
                   <TikTokIcon className="h-4 w-4" />
                 </a>
                 <a
-                  href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                  href="https://www.instagram.com/awan________786?igsh=YmxhbnZpbXlyaTlu&igsi=YmxhbnZpbXlyaTlu"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -537,7 +556,7 @@ export default function Home() {
                   <InstagramIcon className="h-4.5 w-4.5" />
                 </a>
                 <a
-                  href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                  href="https://www.facebook.com/profile.php?id=100093236010103&rdid=G795E3Mc4lV26HvU&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BQnth72tJ%2F#"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
@@ -583,6 +602,8 @@ export default function Home() {
 
           <form
             onSubmit={sendContact}
+            name="contact_home"
+            data-netlify="true"
             className="reveal flex flex-col gap-4 rounded-lg border border-border bg-card p-6 shadow-sm"
           >
             <div>
@@ -591,6 +612,7 @@ export default function Home() {
               </label>
               <input
                 type="email"
+                name="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
@@ -602,6 +624,7 @@ export default function Home() {
                 Message
               </label>
               <textarea
+                name="message"
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 rows={5}
@@ -640,11 +663,11 @@ export default function Home() {
             </div>
             <p className="mt-3 text-sm text-white/75">
               Your trusted dealership for cars, bikes, tractors and genuine
-              spare parts since 2005.
+              spare parts since 1996.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <a
-                href="https://wa.me/923332834567"
+                href="https://wa.me/923121537773"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -653,7 +676,7 @@ export default function Home() {
                 <WhatsAppIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="https://www.youtube.com/@waseemmotorsbhakkar.786"
+                href="https://www.youtube.com/@waseemhondabhakkar"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
@@ -662,7 +685,7 @@ export default function Home() {
                 <YouTubeIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="https://www.tiktok.com/@waseem_motors_official?_r=1&_t=ZS-98lH3a1g6hI"
+                href="https://www.tiktok.com/@waseem_honda?_r=1&_t=ZS-992Giz8Oeou"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok"
@@ -671,7 +694,7 @@ export default function Home() {
                 <TikTokIcon className="h-4 w-4" />
               </a>
               <a
-                href="https://www.instagram.com/waseem_motors_official?igsh=cWhqbGtlNTVzb2No"
+                href="https://www.instagram.com/awan________786?igsh=YmxhbnZpbXlyaTlu&igsi=YmxhbnZpbXlyaTlu"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -680,7 +703,7 @@ export default function Home() {
                 <InstagramIcon className="h-[18px] w-[18px]" />
               </a>
               <a
-                href="https://www.facebook.com/profile.php?id=100086322109876&rdid=vFsJHBZTN2A2Bm7i&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DtkhjazGV%2F#"
+                href="https://www.facebook.com/profile.php?id=100093236010103&rdid=G795E3Mc4lV26HvU&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1BQnth72tJ%2F#"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -733,7 +756,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="container border-t border-white/15 py-5 text-xs text-white/60">
+        <div className="container border-t border-white/15 py-5 text-sm text-white/60 font-semibold">
           © 1996 Waseem Motors. Serving the community with trust and integrity.
           All rights are reserved.
         </div>
