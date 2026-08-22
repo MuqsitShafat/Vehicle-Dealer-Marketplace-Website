@@ -61,13 +61,16 @@ export default function ListingCard({ item }) {
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              {item.category} • {item.year}
+              {item.category}
             </p>
             <Link href={`/vehicle/${item.id}`}>
               <h3 className="mt-0.5 text-xl font-bold leading-tight text-card-foreground">
-                {item.year} {item.title}
+                {item.year}
               </h3>
             </Link>
+            <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+              {item.title}
+            </p>
           </div>
           <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
             <Timer className="mr-1 inline h-3 w-3" />

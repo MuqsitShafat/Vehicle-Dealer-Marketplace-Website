@@ -112,3 +112,4 @@ temp/
 client/public/__manus__/version.json
 .project-config.json
 scratch_debug.js
+scratch_db_test.js

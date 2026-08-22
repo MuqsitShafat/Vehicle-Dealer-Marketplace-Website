@@ -80,7 +80,7 @@ export default function VehicleDetail() {
             ) : (
               <img
                 src={car.img}
-                alt={`${car.year} ${car.title}`}
+                alt={car.year}
                 className="w-full h-full object-cover"
               />
             )}
@@ -95,9 +95,11 @@ export default function VehicleDetail() {
               </Link>
               <span className="kicker">{car.verified ? "Verified listing" : "Standard listing"}</span>
             </div>
+
             <h1 className="mt-2 text-3xl font-display font-bold uppercase tracking-tight md:text-4xl">
-              {car.year} {car.title}
+              {car.year}
             </h1>
+
             <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="h-4 w-4 text-primary" /> {car.city}
@@ -115,23 +117,35 @@ export default function VehicleDetail() {
           </div>
 
           <div className="mt-8">
-            {[
-              ["Listed", car.days],
-              ["Year", String(car.year)],
-              ["Transmission", car.transmission],
-              ["Fuel", car.fuel],
-              ["Condition", car.condition ?? "Good — inspected at showroom"],
-              ["Documents", "Complete file, token tax paid"],
-            ].map(([k, v]) => (
-              <div
-                key={k}
-                className="flex items-baseline justify-between border-b border-border py-3.5"
-              >
-                <span className="text-sm text-muted-foreground">{k}</span>
-                <span className="text-sm font-semibold">{v}</span>
-              </div>
-            ))}
-          </div>
+             {[
+               ["Listed", car.days],
+               ["Model", String(car.year)],
+               ["Transmission", car.transmission],
+               ["Fuel", car.fuel],
+               ["Condition", car.condition ?? "Good — inspected at showroom"],
+               ["Documents", "Complete file, token tax paid"],
+             ].map(([k, v]) => (
+               <div
+                 key={k}
+                 className="flex items-baseline justify-between border-b border-border py-3.5"
+               >
+                 <span className="text-sm text-muted-foreground">{k}</span>
+                 <span className="text-sm font-semibold">{v}</span>
+               </div>
+             ))}
+           </div>
+
+           {/* Description Block */}
+           {car.title && (
+             <div className="mt-8 border-t border-border pt-6">
+               <h2 className="text-xl font-display font-bold uppercase tracking-tight mb-3">
+                 Vehicle Description
+               </h2>
+               <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                 {car.title}
+               </p>
+             </div>
+           )}
         </div>
 
         {/* Right rail: price + action */}
@@ -164,7 +178,7 @@ export default function VehicleDetail() {
             ) : (
               <div className="space-y-2 mt-4">
                  <a
-                  href={`https://wa.me/923121537773?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} ${car.title} (${car.price})`)}`}
+                  href={`https://wa.me/923121537773?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} (${car.price})`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 w-full rounded-md bg-[#25D366] py-3 text-sm font-bold text-white transition-shadow hover:shadow-lg"

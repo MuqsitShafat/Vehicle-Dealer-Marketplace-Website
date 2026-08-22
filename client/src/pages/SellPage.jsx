@@ -38,7 +38,6 @@ export default function SellPage() {
   useReveal();
   const [type, setType] = useState("Car");
   const [title, setTitle] = useState("");
-  const [year, setYear] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
@@ -93,14 +92,14 @@ export default function SellPage() {
       const { error } = await supabase
         .from("listings")
         .insert([{
-          title: title.trim(),
+          title: description.trim() || "No description provided",
           category: type,
           brand: getBrandFromTitle(title, type),
-          year: Number(year) || new Date().getFullYear(),
+          year: title.trim(),
           price: formatPrice(price),
           price_raw: Number(price) || 0,
           km: `${name.trim()} | ${phone.trim()}`,
-          city: description.trim() || "No description provided",
+          city: "Bhakkar",
           fuel: type === "Tractor" ? "Diesel" : "Petrol",
           transmission: type === "Tractor" ? "Manual" : "Automatic",
           verified: false,
@@ -212,23 +211,12 @@ export default function SellPage() {
             </div>
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                Title (make & model)
+                MODEL
               </label>
               <input
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder="e.g. Toyota Corolla Altis"
-                className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                Year
-              </label>
-              <input
-                value={year}
-                onChange={e => setYear(e.target.value)}
-                placeholder="e.g. 2021"
+                placeholder="e.g. Toyota Corolla Altis 2022"
                 className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
               />
             </div>

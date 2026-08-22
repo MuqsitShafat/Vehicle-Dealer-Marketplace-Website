@@ -212,8 +212,8 @@ export default function Admin() {
         .update({
           title: editTitle.trim(),
           category: editCategory,
-          brand: getBrandFromTitle(editTitle, editCategory),
-          year: Number(editYear),
+          brand: getBrandFromTitle(editYear, editCategory),
+          year: editYear.trim(),
           price_raw: Number(editPrice) || 0,
           price: formatPrice(editPrice),
           city: editCity.trim(),
@@ -226,7 +226,7 @@ export default function Admin() {
       if (error) throw error;
 
       toast.dismiss();
-      toast.success(`Listing "${editTitle}" updated successfully.`);
+      toast.success(`Listing "${editYear}" updated successfully.`);
       setEditingListing(null);
       setEditPhotoFiles([]);
       loadData();
@@ -403,8 +403,8 @@ export default function Admin() {
         .insert([{
           title: title.trim(),
           category,
-          brand: getBrandFromTitle(title, category),
-          year: Number(year),
+          brand: getBrandFromTitle(year, category),
+          year: year.trim(),
           price: formatPrice(price),
           price_raw: Number(price) || 0,
           km: "New listing",
@@ -422,7 +422,7 @@ export default function Admin() {
       if (error) throw error;
 
       toast.dismiss();
-      toast.success(`"${title}" is now live.`);
+      toast.success(`"${year}" is now live.`);
       setTitle("");
       setYear("");
       setPrice("");
@@ -722,7 +722,10 @@ export default function Admin() {
                           />
                           <div>
                             <span className="font-semibold block">
-                              {l.year} {l.title}
+                              {l.year}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground block line-clamp-1 max-w-xs">
+                              {l.title}
                             </span>
                             {l.source === "public" && (
                               <span className="text-[10px] text-muted-foreground block mt-0.5 font-semibold">
@@ -909,7 +912,10 @@ export default function Admin() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             <img src={l.img} alt={l.title} className="h-10 w-14 rounded object-cover bg-muted animate-reveal" />
-                            <span className="font-semibold">{l.year} {l.title}</span>
+                            <div className="flex flex-col">
+                              <span className="font-semibold">{l.year}</span>
+                              <span className="text-[11px] text-muted-foreground line-clamp-1 max-w-xs">{l.title}</span>
+                            </div>
                           </div>
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">{l.category}</td>
@@ -1147,14 +1153,15 @@ export default function Admin() {
               <Package className="h-5 w-5 text-primary" /> Add a new listing
             </h2>
             <div className="mt-5 grid gap-5 sm:grid-cols-2">
-              <div>
+              <div className="sm:col-span-2">
                 <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  Make & model
+                  Description
                 </label>
-                <input
+                <textarea
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  placeholder="e.g. Toyota Corolla Altis"
+                  placeholder="Describe the vehicle's features, specs, condition, etc..."
+                  rows={3}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
@@ -1181,12 +1188,12 @@ export default function Admin() {
               </div>
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  Year
+                  MODEL
                 </label>
                 <input
                   value={year}
                   onChange={e => setYear(e.target.value)}
-                  placeholder="e.g. 2022"
+                  placeholder="e.g. Civic X 2022"
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
@@ -1299,12 +1306,13 @@ export default function Admin() {
               <form onSubmit={saveEditedListing} className="mt-5 space-y-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                    Make & Model
+                    Description
                   </label>
-                  <input
+                  <textarea
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     required
+                    rows={3}
                     className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </div>
@@ -1325,12 +1333,13 @@ export default function Admin() {
                   </div>
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                      Year
+                      MODEL
                     </label>
                     <input
                       value={editYear}
                       onChange={(e) => setEditYear(e.target.value)}
                       required
+                      placeholder="e.g. Civic X 2022"
                       className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
                     />
                   </div>
